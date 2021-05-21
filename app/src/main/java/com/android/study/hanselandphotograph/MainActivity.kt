@@ -3,10 +3,13 @@ package com.android.study.hanselandphotograph
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.study.hanselandphotograph.databinding.ActivityMainBinding
 import com.google.android.gms.maps.model.LatLng
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -16,22 +19,23 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_main)
+        setContentView(binding.root)
         initDB()
         init()
     }
 
     private fun initDB() {
         // 스토리 이름(id), 스토리 한줄평, 이동한 좌표, 사진 찍은 좌표
+        val date = LocalDate.now()
         val comment = "첫번째 스토리"
-        val route = arrayListOf<LatLng>(LatLng(37.53,126.96),
-                LatLng(37.54,126.97),
-                LatLng(37.55,126.96),
-                LatLng(37.56,126.97),
-                LatLng(37.57,126.96),
-                LatLng(37.58,126.97))
-        val picture = arrayListOf<LatLng>(LatLng(37.56,126.97))
-        db = arrayListOf(Story(0, "firstStory", comment, route, picture))
+        val route = arrayListOf(Location(37.557,126.973),
+            Location(37.558,126.972),
+            Location(37.559,126.971),
+            Location(37.560,126.970),
+            Location(37.559,126.969),
+            Location(37.558,126.968))
+        val picture = arrayListOf(Location(37.557,126.973), Location(37.560,126.970))
+        db = arrayListOf(Story(0, date, "firstStory", comment, route, picture))
     }
 
     private fun init() {
@@ -43,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                 // initDB() // 새로운 스토리 생성 후 데베 배열 다시 초기화
             }
             mainRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            mainRecyclerView.addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayoutManager.VERTICAL))
             val adapter = StoryAdapter(db)
             adapter.onStoryClickListener = object: StoryAdapter.OnStoryClickListener {
                 override fun onStoryClick(holder: StoryAdapter.ViewHolder, story: Story) {

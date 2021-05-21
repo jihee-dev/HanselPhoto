@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Hansel and Photograph</string>
+    <string name="MAPS_API_KEY">AIzaSyBpimycAHpPlpdvjoc-lZAq1UogfFTTHrY</string>
 </resources>
