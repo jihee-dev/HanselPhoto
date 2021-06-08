@@ -9,6 +9,7 @@ class AddStoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 }
