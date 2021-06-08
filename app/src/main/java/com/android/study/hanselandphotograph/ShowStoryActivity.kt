@@ -1,0 +1,104 @@
+package com.android.study.hanselandphotograph
+
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
+import com.android.study.hanselandphotograph.databinding.ActivityShowStoryBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
+import java.time.LocalDate
+
+class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
+    private lateinit var binding: ActivityShowStoryBinding
+    private lateinit var name: String
+    private lateinit var date: LocalDate
+    private lateinit var comment: String
+    private lateinit var route: ArrayList<Location>
+    private lateinit var picture: ArrayList<Location>
+    private lateinit var map: GoogleMap
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityShowStoryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        init()
+    }
+
+    private fun init() {
+        Log.i("story", "2")
+        val intent = intent
+        val story = intent.getSerializableExtra("story") as Story
+        name = story.name
+        date = story.date
+        comment = story.comment
+        route = story.route
+        picture = story.picture
+
+        binding.apply {
+            showName.text = name
+            showDate.text = date.toString()
+            showComment.text = comment
+        }
+
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        Log.i("story", "1")
+        map = googleMap
+        for (xy in picture) {
+            val markerOptions = MarkerOptions()
+            markerOptions.position(LatLng(xy.x, xy.y))
+
+            val cameraIcon = BitmapFactory.decodeResource(resources, R.drawable.camera_icon)
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(cameraIcon, 120, 120, true)))
+//            markerOptions.title("1")
+//            markerOptions.snippet("1")
+            map.addMarker(markerOptions)
+        }
+        val polyLineOptions = PolylineOptions()
+        polyLineOptions.color(0xffff0000.toInt())
+        polyLineOptions.add()
+        for (xy in route) {
+            polyLineOptions.add(LatLng(xy.x, xy.y))
+        }
+        map.addPolyline(polyLineOptions)
+
+        val middleXY = LatLng(route[route.size / 2].x, route[route.size / 2].y)
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(middleXY, 15f))
+
+        map.setOnMarkerClickListener {
+            val intent = Intent(this, ShowImageActivity::class.java)
+            val path = "./image"
+            intent.putExtra("path", path)
+//            Toast.makeText(this, "marker click!", Toast.LENGTH_SHORT).show()
+            startActivity(intent)
+            false
+        }
+
+//        map.setOnInfoWindowClickListener {
+//            Toast.makeText(this, "info click!", Toast.LENGTH_SHORT).show()
+//        }
+
+    }
+
+    override fun onPolylineClick(googleMap: Polyline) {
+        // nothing
+    }
+
+//    override fun onMarkerClick(marker: Marker): Boolean {
+//        Toast.makeText(this, "click!", Toast.LENGTH_SHORT).show()
+//        return true
+//    }
+}
