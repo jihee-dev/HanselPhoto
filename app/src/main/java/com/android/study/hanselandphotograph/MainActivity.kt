@@ -2,13 +2,10 @@ package com.android.study.hanselandphotograph
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Window
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.study.hanselandphotograph.databinding.ActivityMainBinding
-import com.google.android.gms.maps.model.LatLng
 import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
