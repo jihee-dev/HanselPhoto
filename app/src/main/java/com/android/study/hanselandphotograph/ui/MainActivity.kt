@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         initToolbar()
         initDB()
         init()
+        // test
     }
 
     private fun initToolbar() {
