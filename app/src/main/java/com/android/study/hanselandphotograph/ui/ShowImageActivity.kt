@@ -1,10 +1,9 @@
-package com.android.study.hanselandphotograph
+package com.android.study.hanselandphotograph.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.android.study.hanselandphotograph.databinding.ActivityShowImageBinding
-import com.android.study.hanselandphotograph.databinding.ActivityShowStoryBinding
 
 class ShowImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityShowImageBinding

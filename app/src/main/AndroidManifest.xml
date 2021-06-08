@@ -9,15 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HanselAndPhotograph">
-        <activity android:name=".ShowImageActivity"></activity>
+        <activity android:name=".ui.AddStoryActivity"></activity>
+        <activity android:name=".ui.ShowImageActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/MAPS_API_KEY" />
 
-        <activity android:name=".NewStoryActivity" />
-        <activity android:name=".ShowStoryActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.AddStoryActivity" />
+        <activity android:name=".ui.ShowStoryActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

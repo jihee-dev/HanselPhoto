@@ -1,15 +1,15 @@
-package com.android.study.hanselandphotograph
+package com.android.study.hanselandphotograph.ui
 
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
+import androidx.appcompat.app.AppCompatActivity
+import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.databinding.ActivityShowStoryBinding
+import com.android.study.hanselandphotograph.model.Location
+import com.android.study.hanselandphotograph.model.Story
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -30,6 +30,7 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
         super.onCreate(savedInstanceState)
         binding = ActivityShowStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         init()
     }
 
