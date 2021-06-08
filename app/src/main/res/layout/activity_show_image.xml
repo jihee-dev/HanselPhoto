@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".ShowImageActivity">
+    tools:context=".ui.ShowImageActivity">
 
     <ImageView
         android:id="@+id/imageView"

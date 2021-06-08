@@ -1,9 +1,10 @@
-package com.android.study.hanselandphotograph
+package com.android.study.hanselandphotograph.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.android.study.hanselandphotograph.databinding.RowStoryBinding
+import com.android.study.hanselandphotograph.model.Story
 
 class StoryAdapter(private val storys: ArrayList<Story>): RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
 

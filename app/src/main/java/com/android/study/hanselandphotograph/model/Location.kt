@@ -1,4 +1,4 @@
-package com.android.study.hanselandphotograph
+package com.android.study.hanselandphotograph.model
 
 import java.io.Serializable
 
