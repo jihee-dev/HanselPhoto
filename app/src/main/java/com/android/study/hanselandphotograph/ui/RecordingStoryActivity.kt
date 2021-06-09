@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.android.study.hanselandphotograph.R
-import com.android.study.hanselandphotograph.databinding.ActivityAddStoryBinding
+import com.android.study.hanselandphotograph.databinding.ActivityRecordingStoryBinding
 
-class AddStoryActivity : AppCompatActivity() {
-    lateinit var binding: ActivityAddStoryBinding
+class RecordingStoryActivity : AppCompatActivity() {
+    lateinit var binding: ActivityRecordingStoryBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAddStoryBinding.inflate(layoutInflater)
+        binding = ActivityRecordingStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initToolbar()
         init()
@@ -21,7 +21,7 @@ class AddStoryActivity : AppCompatActivity() {
     private fun initToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.title = "스토리 추가"
+        binding.toolbar.title = "스토리 기록 중"
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_new_24)
@@ -29,15 +29,19 @@ class AddStoryActivity : AppCompatActivity() {
 
     private fun init() {
         binding.apply {
-            startRecordBtn.setOnClickListener {
-                val intent = Intent(this@AddStoryActivity, RecordingStoryActivity::class.java)
+            finishRecordBtn.setOnClickListener {
+                val intent = Intent(this@RecordingStoryActivity, CommentStoryActivity::class.java)
                 startActivity(intent)
+            }
+
+            addImageBtn.setOnClickListener {
+                // select image from gallery or camera
             }
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        when(item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
             }

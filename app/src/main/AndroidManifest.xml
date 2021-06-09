@@ -10,14 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HanselAndPhotograph">
         <activity android:name=".ui.AddStoryActivity"></activity>
-        <activity android:name=".ui.ShowImageActivity" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/MAPS_API_KEY" />
-
-        <activity android:name=".ui.AddStoryActivity" />
-        <activity android:name=".ui.ShowStoryActivity" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,6 +17,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.Main2Activity" />
+        <activity android:name=".ui.StoryActivity" />
+        <activity android:name=".ui.CommentStoryActivity" />
+        <activity android:name=".ui.RecordingStoryActivity" />
+        <activity android:name=".ui.ShowImageActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/MAPS_API_KEY" />
+
+        <activity android:name=".ui.ShowStoryActivity" />
     </application>
 
 </manifest>

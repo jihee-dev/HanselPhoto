@@ -1,4 +1,4 @@
-package com.android.study.hanselandphotograph.ui
+package com.android.study.hanselandphotograph.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
