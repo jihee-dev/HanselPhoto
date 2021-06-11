@@ -1,22 +1,21 @@
 package com.android.study.hanselandphotograph.ui
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.android.study.hanselandphotograph.R
-import com.android.study.hanselandphotograph.model.ARData
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.CameraNotAvailableException
+import com.google.ar.core.exceptions.FatalException
 import com.google.ar.core.exceptions.UnavailableException
 import com.google.ar.sceneform.ArSceneView
 import com.google.ar.sceneform.Node
 import com.google.ar.sceneform.rendering.ViewRenderable
-import com.google.ar.sceneform.ux.ArFragment
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
@@ -25,6 +24,7 @@ import java.util.concurrent.CompletableFuture
 class ArActivity : AppCompatActivity() {
     private lateinit var arSceneView: ArSceneView
     private var locationScene: LocationScene? = null
+
     //    lateinit var myDBHelper: MyDBHelper
     var installRequested = false
     var hasFinishedLoading = false
@@ -80,7 +80,8 @@ class ArActivity : AppCompatActivity() {
 
                     var layoutLocationMarker = LocationMarker(37.541636, 127.077324, base)
                     layoutLocationMarker.setRenderEvent { locationNode ->
-                        exampleLayoutRenderable.view.findViewById<TextView>(R.id.arTitle).text = "test"
+                        exampleLayoutRenderable.view.findViewById<TextView>(R.id.arTitle).text =
+                            "test"
                     }
                     locationScene?.mLocationMarkers?.add(layoutLocationMarker)
                     var lmarker2 = LocationMarker(37.542206, 127.077345, base)
@@ -137,6 +138,9 @@ class ArActivity : AppCompatActivity() {
         } catch (ex: CameraNotAvailableException) {
             Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
             finish()
+        } catch (ex: FatalException) {
+            Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
+            finish()
         }
     }
 
@@ -154,7 +158,11 @@ class ArActivity : AppCompatActivity() {
         arSceneView.destroy()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (!ARLocationPermissionHelper.hasPermission(this)) {
             if (!ARLocationPermissionHelper.shouldShowRequestPermissionRationale(this)) {
