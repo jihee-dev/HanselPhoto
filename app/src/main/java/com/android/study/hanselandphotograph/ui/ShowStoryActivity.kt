@@ -57,43 +57,40 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
     override fun onMapReady(googleMap: GoogleMap) {
         Log.i("story", "1")
         map = googleMap
-        if (route.size != 0) {
-            val polyLineOptions = PolylineOptions()
-            polyLineOptions.color(0xffff0000.toInt())
-            polyLineOptions.add()
-            for (xy in route) {
-                polyLineOptions.add(LatLng(xy.x, xy.y))
-            }
-            map.addPolyline(polyLineOptions)
+        for (xy in picture) {
+            val markerOptions = MarkerOptions()
+            markerOptions.position(LatLng(xy.x, xy.y))
 
-            for (xy in picture) {
-                val markerOptions = MarkerOptions()
-                markerOptions.position(LatLng(xy.x, xy.y))
-
-                val cameraIcon = BitmapFactory.decodeResource(resources, R.drawable.camera_icon)
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(cameraIcon, 120, 120, true)))
-//                markerOptions.title("1")
-//                markerOptions.snippet("1")
-                map.addMarker(markerOptions)
-
-                val middleXY = LatLng(route[route.size / 2].x, route[route.size / 2].y)
-
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(middleXY, 15f))
-
-                map.setOnMarkerClickListener {
-                    val intent = Intent(this, ShowImageActivity::class.java)
-                    val path = "./image"
-                    intent.putExtra("path", path)
-//                    Toast.makeText(this, "marker click!", Toast.LENGTH_SHORT).show()
-                    startActivity(intent)
-                    false
-                }
-
-//                map.setOnInfoWindowClickListener {
-//                    Toast.makeText(this, "info click!", Toast.LENGTH_SHORT).show()
-//                }
-            }
+            val cameraIcon = BitmapFactory.decodeResource(resources, R.drawable.camera_icon)
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(cameraIcon, 120, 120, true)))
+//            markerOptions.title("1")
+//            markerOptions.snippet("1")
+            map.addMarker(markerOptions)
         }
+        val polyLineOptions = PolylineOptions()
+        polyLineOptions.color(0xffff0000.toInt())
+        polyLineOptions.add()
+        for (xy in route) {
+            polyLineOptions.add(LatLng(xy.x, xy.y))
+        }
+        map.addPolyline(polyLineOptions)
+
+        val middleXY = LatLng(route[route.size / 2].x, route[route.size / 2].y)
+
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(middleXY, 15f))
+
+        map.setOnMarkerClickListener {
+            val intent = Intent(this, ShowImageActivity::class.java)
+            val path = "./image"
+            intent.putExtra("path", path)
+//            Toast.makeText(this, "marker click!", Toast.LENGTH_SHORT).show()
+            startActivity(intent)
+            false
+        }
+
+//        map.setOnInfoWindowClickListener {
+//            Toast.makeText(this, "info click!", Toast.LENGTH_SHORT).show()
+//        }
 
     }
 
