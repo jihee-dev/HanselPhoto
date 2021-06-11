@@ -77,6 +77,11 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 // initDB() // 새로운 스토리 생성 후 데베 배열 다시 초기화
             }
+
+            mainToArBtn.setOnClickListener {
+                val intent = Intent(this@MainActivity, ArActivity::class.java)
+                startActivity(intent)
+            }
             mainRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
             mainRecyclerView.addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayoutManager.VERTICAL))
             val adapter = StoryAdapter(db)
