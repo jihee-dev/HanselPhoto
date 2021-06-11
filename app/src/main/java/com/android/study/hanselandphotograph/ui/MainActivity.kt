@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.study.hanselandphotograph.R
+import com.android.study.hanselandphotograph.adapter.StoryAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityMainBinding
 import com.android.study.hanselandphotograph.model.Location
 import com.android.study.hanselandphotograph.model.Story
