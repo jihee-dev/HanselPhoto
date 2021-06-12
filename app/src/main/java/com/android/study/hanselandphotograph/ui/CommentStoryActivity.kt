@@ -14,6 +14,8 @@ import java.time.LocalDate
 
 class CommentStoryActivity : AppCompatActivity() {
     lateinit var binding: ActivityCommentStoryBinding
+    private val FINISH_INTERVAL_TIME: Long = 2000
+    private var backPressedTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +45,7 @@ class CommentStoryActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                val intent = Intent(this@CommentStoryActivity, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(intent)
+                onBackPressed()
             }
 
             R.id.action_save -> {
@@ -53,13 +53,20 @@ class CommentStoryActivity : AppCompatActivity() {
 
                 val intent = Intent(this@CommentStoryActivity, ShowStoryActivity::class.java)
                 // put sample data
+                val sampleLocation = Location(37.54094112888107, 127.07934279796626)
+                val sampleLocation2 = Location(37.54115049852869, 127.07834949860488)
+                val sampleLocation3 = Location(37.541844388275294, 127.07859600645149)
+                val trackList =
+                    arrayListOf<Location>(sampleLocation, sampleLocation2, sampleLocation3)
+                val picList = arrayListOf<Location>(sampleLocation2)
+
                 val sampleStory = Story(
                     0,
                     LocalDate.of(2021, 1, 1),
                     "Sample Name",
                     "Sample Comment",
-                    ArrayList<Location>(),
-                    ArrayList<Location>()
+                    trackList as ArrayList<Location>,
+                    picList as ArrayList<Location>
                 )
                 intent.putExtra("story", sampleStory)
                 startActivity(intent)
@@ -67,5 +74,19 @@ class CommentStoryActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        val tempTime = System.currentTimeMillis()
+        val intervalTime: Long = tempTime - backPressedTime
+
+        if (intervalTime in 0..FINISH_INTERVAL_TIME) {
+            val intent = Intent(this@CommentStoryActivity, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+        } else {
+            backPressedTime = tempTime
+            Toast.makeText(applicationContext, "한번 더 누르면 작성한 기록이 삭제됩니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 }

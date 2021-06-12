@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.databinding.ActivityShowStoryBinding
@@ -17,7 +18,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import java.time.LocalDate
 
-class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
+class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
+    GoogleMap.OnPolylineClickListener {
     private lateinit var binding: ActivityShowStoryBinding
     private lateinit var name: String
     private lateinit var date: LocalDate
@@ -30,8 +32,17 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
         super.onCreate(savedInstanceState)
         binding = ActivityShowStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+        initToolbar()
         init()
+    }
+
+    private fun initToolbar() {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbar.title = "스토리 제목"
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_new_24)
     }
 
     private fun init() {
@@ -50,7 +61,8 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
             showComment.text = comment
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
@@ -62,7 +74,16 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
             markerOptions.position(LatLng(xy.x, xy.y))
 
             val cameraIcon = BitmapFactory.decodeResource(resources, R.drawable.camera_icon)
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(cameraIcon, 120, 120, true)))
+            markerOptions.icon(
+                BitmapDescriptorFactory.fromBitmap(
+                    Bitmap.createScaledBitmap(
+                        cameraIcon,
+                        120,
+                        120,
+                        true
+                    )
+                )
+            )
 //            markerOptions.title("1")
 //            markerOptions.snippet("1")
             map.addMarker(markerOptions)
@@ -102,4 +123,21 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
 //        Toast.makeText(this, "click!", Toast.LENGTH_SHORT).show()
 //        return true
 //    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    override fun onBackPressed() {
+        val intent = Intent(this@ShowStoryActivity, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+    }
 }

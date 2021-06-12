@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.icu.text.SimpleDateFormat
 import android.location.LocationManager
 import android.net.Uri
@@ -25,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.PicListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityRecordingStoryBinding
+import com.android.study.hanselandphotograph.model.Location
 import com.android.study.hanselandphotograph.model.Picture
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -33,21 +33,25 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolygonOptions
 import java.io.File
+import kotlin.math.*
 
 class RecordingStoryActivity : AppCompatActivity() {
     lateinit var binding: ActivityRecordingStoryBinding
     lateinit var adapter: PicListAdapter
     var picList: ArrayList<Picture> = ArrayList()
+    private val FINISH_INTERVAL_TIME: Long = 2000
+    private var backPressedTime: Long = 0
 
     lateinit var googleMap: GoogleMap
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     lateinit var locationRequest: LocationRequest
     lateinit var locationCallback: LocationCallback
     var startUpdate = false
+    var isFirstGPS = true
     var loc = LatLng(37.554752, 126.970631)
-    val arrLoc = ArrayList<LatLng>()
+    var lastLoc = LatLng(0.0, 0.0)
+    var locationList: ArrayList<Location> = ArrayList()
 
     val PERMISSIONS = arrayOf(
         Manifest.permission.CAMERA,
@@ -105,7 +109,6 @@ class RecordingStoryActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync {
             googleMap = it
-            initMapListener()
         }
     }
 
@@ -113,7 +116,7 @@ class RecordingStoryActivity : AppCompatActivity() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         locationRequest = LocationRequest.create().apply {
-            interval = 10000
+            interval = 5000
             fastestInterval = 5000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
@@ -128,29 +131,6 @@ class RecordingStoryActivity : AppCompatActivity() {
                 setCurrentLocation(loc)
                 Log.i("location", "LocationCallback()")
             }
-        }
-    }
-
-    private fun initMapListener() {
-        googleMap.setOnMapClickListener {
-            // distance check
-
-            arrLoc.add(it)
-            googleMap.clear()
-
-            val option = MarkerOptions()
-            option.position(it)
-            option.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-            googleMap.addMarker(option)
-
-            /*val option2 = PolylineOptions().color(Color.GREEN).addAll(arrLoc)
-            googleMap.addPolyline(option2)*/
-
-            val option2 =
-                PolygonOptions().fillColor(Color.argb(100, 255, 255, 0))
-                    .strokeColor(Color.GREEN)
-                    .addAll(arrLoc)
-            googleMap.addPolygon(option2)
         }
     }
 
@@ -194,11 +174,29 @@ class RecordingStoryActivity : AppCompatActivity() {
     }
 
     fun setCurrentLocation(location: LatLng) {
-        val option = MarkerOptions()
-        option.position(location)
-        option.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        googleMap.addMarker(option)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16.0f))
+        Log.i("Current Location: ", "(" + location.latitude.toString() + ", " + location.longitude.toString() + ")")
+        if (updateLoc(lastLoc, location) || isFirstGPS) {
+            isFirstGPS = false
+            lastLoc = location
+            locationList.add(Location(lastLoc.latitude, lastLoc.longitude))
+            Log.i("Update Location List", "(" + lastLoc.latitude.toString() + ", " + lastLoc.longitude.toString() + ")")
+
+            val option = MarkerOptions()
+            option.position(lastLoc)
+            option.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            googleMap.clear()
+            googleMap.addMarker(option)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLoc, 16.0f))
+        }
+    }
+
+    private fun updateLoc(loc1: LatLng, loc2: LatLng): Boolean {
+        val R = 6372.8 * 1000
+        val dLat = Math.toRadians(loc2.latitude - loc1.latitude)
+        val dLon = Math.toRadians(loc2.longitude - loc1.longitude)
+        val a = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(Math.toRadians(loc1.latitude)) * cos(Math.toRadians(loc2.latitude))
+        val c = 2 * asin(sqrt(a))
+        return ((R * c) > 1.0) // 1m
     }
 
     private fun startLocationUpdates() {
@@ -244,8 +242,8 @@ class RecordingStoryActivity : AppCompatActivity() {
         builder.setTitle("위치 서비스 비활성화")
         builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n" + "위치 설정을 허용하겠습니까?")
         builder.setPositiveButton("설정", DialogInterface.OnClickListener { dialog, id ->
-            val gpsSettionIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivityForResult(gpsSettionIntent, 1000)
+            val gpsSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivityForResult(gpsSettingIntent, 1000)
         })
         builder.setNegativeButton("취소", DialogInterface.OnClickListener { dialog, id ->
             dialog.dismiss()
@@ -330,12 +328,38 @@ class RecordingStoryActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                val intent = Intent(this@RecordingStoryActivity, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                startActivity(intent)
+                onBackPressed()
             }
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        val tempTime = System.currentTimeMillis()
+        val intervalTime: Long = tempTime - backPressedTime
+
+        if (intervalTime in 0..FINISH_INTERVAL_TIME) {
+            val intent = Intent(this@RecordingStoryActivity, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+        } else {
+            backPressedTime = tempTime
+            Toast.makeText(applicationContext, "한번 더 누르면 작성한 기록이 삭제됩니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i("location", "onResume()")
+        if (!startUpdate) {
+            startLocationUpdates()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i("location", "onPause()")
+        stopLocationUpdate()
     }
 }
