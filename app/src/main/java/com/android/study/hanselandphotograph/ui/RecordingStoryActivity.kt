@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.icu.text.SimpleDateFormat
 import android.location.LocationManager
 import android.net.Uri
@@ -33,13 +34,13 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import java.io.File
 import kotlin.math.*
 
 class RecordingStoryActivity : AppCompatActivity() {
     lateinit var binding: ActivityRecordingStoryBinding
     lateinit var adapter: PicListAdapter
-    var picList: ArrayList<Picture> = ArrayList()
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
 
@@ -51,7 +52,9 @@ class RecordingStoryActivity : AppCompatActivity() {
     var isFirstGPS = true
     var loc = LatLng(37.554752, 126.970631)
     var lastLoc = LatLng(0.0, 0.0)
-    var locationList: ArrayList<Location> = ArrayList()
+    var locationList = ArrayList<Location>()
+    var locationList2 = ArrayList<LatLng>()
+    var pictureList = ArrayList<Picture>()
 
     val PERMISSIONS = arrayOf(
         Manifest.permission.CAMERA,
@@ -76,7 +79,7 @@ class RecordingStoryActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        adapter = PicListAdapter(picList)
+        adapter = PicListAdapter(pictureList)
         adapter.itemClickListener = object : PicListAdapter.OnItemClickListener {
             override fun onItemClick(
                 holder: PicListAdapter.ViewHolder,
@@ -84,13 +87,13 @@ class RecordingStoryActivity : AppCompatActivity() {
                 data: Picture,
                 position: Int
             ) {
-                val intent = Intent(this@RecordingStoryActivity, ShowImageActivity::class.java)
+                val intent = Intent(this@RecordingStoryActivity, EditImageActivity::class.java)
+                intent.putExtra("picture", data)
                 startActivity(intent)
             }
         }
 
         binding.recyclerView.adapter = adapter
-
     }
 
     private fun initToolbar() {
@@ -174,18 +177,29 @@ class RecordingStoryActivity : AppCompatActivity() {
     }
 
     fun setCurrentLocation(location: LatLng) {
-        Log.i("Current Location: ", "(" + location.latitude.toString() + ", " + location.longitude.toString() + ")")
-        if (updateLoc(lastLoc, location) || isFirstGPS) {
+        Log.i(
+            "Current Location: ",
+            "(" + location.latitude.toString() + ", " + location.longitude.toString() + ")"
+        )
+        if (isFirstGPS || updateLoc(lastLoc, location)) {
             isFirstGPS = false
             lastLoc = location
             locationList.add(Location(lastLoc.latitude, lastLoc.longitude))
-            Log.i("Update Location List", "(" + lastLoc.latitude.toString() + ", " + lastLoc.longitude.toString() + ")")
+            locationList2.add(lastLoc)
+            Log.i(
+                "Update Location List",
+                "(" + lastLoc.latitude.toString() + ", " + lastLoc.longitude.toString() + ")"
+            )
 
             val option = MarkerOptions()
             option.position(lastLoc)
             option.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             googleMap.clear()
             googleMap.addMarker(option)
+
+            val option2 = PolylineOptions().color(Color.GREEN).addAll(locationList2)
+            googleMap.addPolyline(option2)
+
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastLoc, 16.0f))
         }
     }
@@ -194,9 +208,12 @@ class RecordingStoryActivity : AppCompatActivity() {
         val R = 6372.8 * 1000
         val dLat = Math.toRadians(loc2.latitude - loc1.latitude)
         val dLon = Math.toRadians(loc2.longitude - loc1.longitude)
-        val a = sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(Math.toRadians(loc1.latitude)) * cos(Math.toRadians(loc2.latitude))
+        val a =
+            sin(dLat / 2).pow(2.0) + sin(dLon / 2).pow(2.0) * cos(Math.toRadians(loc1.latitude)) * cos(
+                Math.toRadians(loc2.latitude)
+            )
         val c = 2 * asin(sqrt(a))
-        return ((R * c) > 1.0) // 1m
+        return ((R * c) > 5.0) // 5m
     }
 
     private fun startLocationUpdates() {
@@ -354,6 +371,16 @@ class RecordingStoryActivity : AppCompatActivity() {
         Log.i("location", "onResume()")
         if (!startUpdate) {
             startLocationUpdates()
+        }
+
+        super.onResume()
+        val picture = intent.getSerializableExtra("picture") as Picture
+
+        for (p in pictureList) {
+            if (p.id == picture.id) {
+                p.title = picture.title
+                // p.comment = picture.comment
+            }
         }
     }
 
