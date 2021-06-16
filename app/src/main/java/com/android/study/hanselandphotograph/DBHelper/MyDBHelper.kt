@@ -88,7 +88,7 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         val strsql = "select $STORY_ID from $STORY_TABLE order by 'desc';"
         val db1 = readableDatabase
         val cursor = db1.rawQuery(strsql, null)
-        cursor.moveToFirst()
+        cursor.moveToLast()
         val sID = cursor.getInt(0)
         cursor.close()
         db1.close()
@@ -117,7 +117,7 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
     }
 
     fun selectPicID(dat: Int): Int {
-        val strsql = "select count(*) from $PIC_TABLE where $STORY_ID = $dat;"
+//        val strsql = "select count(*) from $PIC_TABLE where $STORY_ID = $dat;"
         val db = readableDatabase
         val cursor = db.query(
                 PIC_TABLE,
@@ -137,13 +137,6 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
     }
     fun insertLocation(location:Location):Boolean{
         val sID = getStoryID()
-//        val db = writableDatabase
-//        val sql = "insert into $LOC_TABLE($LOC_ID, $STORY_ID, $LOC_LAT, $LOC_LONG)" +
-//                "values (${selectLocID(sID)}, $sID, ${location.x}, ${location.y});"
-//        val cursor = db.rawQuery(sql, null)
-//        cursor.close()
-//        db.close()
-//        return true
         val values = ContentValues()
         values.put(LOC_ID, selectLocID(sID))
         values.put(STORY_ID, sID)
@@ -179,6 +172,7 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         val db = writableDatabase
         val flag = db.insert(STORY_TABLE, null, values)>0
         db.close()
+        Log.i("sid", getStoryID().toString())
         return flag
     }
 
