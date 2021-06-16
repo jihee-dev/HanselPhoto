@@ -19,7 +19,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import java.time.LocalDate
 
-class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
+class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
+    GoogleMap.OnPolylineClickListener {
     private lateinit var binding: ActivityShowStoryBinding
     private lateinit var name: String
     private lateinit var date: LocalDate
@@ -32,7 +33,6 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
         super.onCreate(savedInstanceState)
         binding = ActivityShowStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
         initToolbar()
         init()
     }
@@ -40,7 +40,7 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
     private fun initToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-//        binding.toolbar.title = "스토리 입력"
+        binding.toolbar.title = "스토리 제목"
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_new_24)
@@ -62,11 +62,12 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
             showComment.text = comment
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
+override fun onMapReady(googleMap: GoogleMap) {
         Log.i("story", "1")
         map = googleMap
         if (route.size != 0) {
@@ -113,6 +114,12 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
         // nothing
     }
 
+
+//    override fun onMarkerClick(marker: Marker): Boolean {
+//        Toast.makeText(this, "click!", Toast.LENGTH_SHORT).show()
+//        return true
+//    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -121,5 +128,11 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this@ShowStoryActivity, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 }
