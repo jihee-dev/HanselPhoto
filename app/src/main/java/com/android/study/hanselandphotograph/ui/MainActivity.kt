@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -56,10 +57,12 @@ class MainActivity : AppCompatActivity() {
 
         menuItem?.setOnActionExpandListener(object :MenuItem.OnActionExpandListener{
             override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+                binding.mainInsertBtn.visibility = View.GONE
                 return true
             }
 
             override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
+                binding.mainInsertBtn.visibility = View.VISIBLE
                 adapter.storys = storyList
                 adapter.notifyDataSetChanged()
                 return true
