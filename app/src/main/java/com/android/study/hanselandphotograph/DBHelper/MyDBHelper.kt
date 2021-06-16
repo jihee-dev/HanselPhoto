@@ -76,8 +76,8 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         val cursor = db1.rawQuery(strsql, null)
         var sID = 0
         if(cursor!=null){
-            cursor.moveToLast()
-            sID = cursor.getInt(0) + 1
+            cursor.moveToFirst()
+            sID = cursor.getInt(0)
             cursor.close()
             db1.close()
         }
@@ -88,7 +88,8 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         val strsql = "select count(*) from $LOC_TABLE where $STORY_ID = $dat;"
         val db = readableDatabase
         val cursor = db.rawQuery(strsql, null)
-        val flag = cursor.count
+        cursor.moveToFirst()
+        val flag = cursor.getInt(0)
         cursor.close()
         db.close()
         return flag
@@ -98,7 +99,8 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         val strsql = "select count(*) from $PIC_TABLE where $STORY_ID = $dat;"
         val db = readableDatabase
         val cursor = db.rawQuery(strsql, null)
-        val flag = cursor.count
+        cursor.moveToFirst()
+        val flag = cursor.getInt(0)
         cursor.close()
         db.close()
         return flag
