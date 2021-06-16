@@ -22,7 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HanselAndPhotograph">
         <activity android:name=".ui.EditImageActivity"></activity>
-        <activity android:name=".ui.EditImageStory" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

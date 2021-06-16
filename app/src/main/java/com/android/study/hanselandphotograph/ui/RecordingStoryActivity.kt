@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.PicListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityRecordingStoryBinding
@@ -48,6 +49,7 @@ class RecordingStoryActivity : AppCompatActivity() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     lateinit var locationRequest: LocationRequest
     lateinit var locationCallback: LocationCallback
+    lateinit var myDBHelper: MyDBHelper
     var startUpdate = false
     var isFirstGPS = true
     var loc = LatLng(37.554752, 126.970631)
@@ -55,6 +57,7 @@ class RecordingStoryActivity : AppCompatActivity() {
     var locationList = ArrayList<Location>()
     var locationList2 = ArrayList<LatLng>()
     var pictureList = ArrayList<Picture>()
+    var picNum = 0
 
     val PERMISSIONS = arrayOf(
         Manifest.permission.CAMERA,
@@ -278,14 +281,24 @@ class RecordingStoryActivity : AppCompatActivity() {
                     startLocationUpdates()
                 }
             }
+
+            BUTTON -> {
+                var picture = Picture(picNum, "", filepath, lastLoc.latitude, lastLoc.longitude)
+                pictureList.add(picture)
+                picNum += 1
+            }
         }
     }
 
     private fun init() {
+        myDBHelper = MyDBHelper(this)
         binding.apply {
             finishRecordBtn.setOnClickListener {
                 val intent =
                     Intent(this@RecordingStoryActivity, CommentStoryActivity::class.java)
+                for (i in 0..locationList.size){
+                    myDBHelper.insertLocation(locationList[i])
+                }
                 startActivity(intent)
             }
 
@@ -379,7 +392,6 @@ class RecordingStoryActivity : AppCompatActivity() {
         for (p in pictureList) {
             if (p.id == picture.id) {
                 p.title = picture.title
-                // p.comment = picture.comment
             }
         }
     }
@@ -389,4 +401,5 @@ class RecordingStoryActivity : AppCompatActivity() {
         Log.i("location", "onPause()")
         stopLocationUpdate()
     }
+
 }

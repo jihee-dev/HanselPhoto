@@ -1,6 +1,7 @@
 package com.android.study.hanselandphotograph.ui
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -77,5 +78,7 @@ class EditImageActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         picture = intent.getSerializableExtra("picture") as Picture
+        binding.imageView.setImageURI(Uri.parse(picture.path))
+        binding.picTitleEdit.setText(picture.title)
     }
 }
