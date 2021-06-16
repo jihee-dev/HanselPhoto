@@ -34,9 +34,9 @@ class EditImageActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        val intent = intent
+        /*val intent = intent
         val path = intent.getStringExtra("path")
-        Toast.makeText(this, path, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, path, Toast.LENGTH_LONG).show()*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
