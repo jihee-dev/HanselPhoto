@@ -21,7 +21,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import java.time.LocalDate
 
-class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPolylineClickListener {
+class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
+    GoogleMap.OnPolylineClickListener {
     private lateinit var binding: ActivityShowStoryBinding
     private lateinit var name: String
     private lateinit var date: String
@@ -68,7 +69,8 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
             showComment.text = comment
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
@@ -92,7 +94,16 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
                 val markerOptions = MarkerOptions()
                 markerOptions.position(LatLng(xy.lat, xy.long))
                 val cameraIcon = BitmapFactory.decodeResource(resources, R.drawable.camera_icon)
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createScaledBitmap(cameraIcon, 120, 120, true)))
+                markerOptions.icon(
+                    BitmapDescriptorFactory.fromBitmap(
+                        Bitmap.createScaledBitmap(
+                            cameraIcon,
+                            120,
+                            120,
+                            true
+                        )
+                    )
+                )
                 map.addMarker(markerOptions)
             }
 
@@ -132,5 +143,11 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this@ShowStoryActivity, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 }

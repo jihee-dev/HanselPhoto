@@ -23,12 +23,19 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var dbHelper: MyDBHelper
+
     /**************************************************************************************************/
     private lateinit var storyList: ArrayList<Story>
     var searchList = arrayListOf<Story>()
+
     /**************************************************************************************************/
-    private lateinit var adapter:StoryAdapter
-//    private lateinit var db: ArrayList<Story>
+    private lateinit var adapter: StoryAdapter
+
+    //    private lateinit var db: ArrayList<Story>
+    private val FINISH_INTERVAL_TIME: Long = 2000
+    private var backPressedTime: Long = 0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -54,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
         val menuItem = menu?.findItem(R.id.action_search)
 
-        menuItem?.setOnActionExpandListener(object :MenuItem.OnActionExpandListener{
+        menuItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
                 return true
             }
@@ -68,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         val searchView = menuItem?.actionView as SearchView
-        searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return true
             }
@@ -167,10 +174,16 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, ArActivity::class.java)
                 startActivity(intent)
             }
-            mainRecyclerView.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-            mainRecyclerView.addItemDecoration(DividerItemDecoration(this@MainActivity, LinearLayoutManager.VERTICAL))
+            mainRecyclerView.layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            mainRecyclerView.addItemDecoration(
+                DividerItemDecoration(
+                    this@MainActivity,
+                    LinearLayoutManager.VERTICAL
+                )
+            )
             adapter = StoryAdapter(storyList)
-            adapter.onStoryClickListener = object: StoryAdapter.OnStoryClickListener {
+            adapter.onStoryClickListener = object : StoryAdapter.OnStoryClickListener {
                 override fun onStoryClick(holder: StoryAdapter.ViewHolder, story: Story) {
                     // show story
                     val intent = Intent(this@MainActivity, ShowStoryActivity::class.java)
@@ -180,6 +193,18 @@ class MainActivity : AppCompatActivity() {
 
             }
             mainRecyclerView.adapter = adapter
+        }
+    }
+
+    override fun onBackPressed() {
+        val tempTime = System.currentTimeMillis()
+        val intervalTime: Long = tempTime - backPressedTime
+
+        if (intervalTime in 0..FINISH_INTERVAL_TIME) {
+            finish()
+        } else {
+            backPressedTime = tempTime
+            Toast.makeText(applicationContext, "한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
         }
     }
 }
