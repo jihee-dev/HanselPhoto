@@ -34,6 +34,7 @@ class AddStoryActivity : AppCompatActivity() {
         binding.apply {
             startRecordBtn.setOnClickListener {
                 val intent = Intent(this@AddStoryActivity, RecordingStoryActivity::class.java)
+                intent.putExtra("title", binding.storyTitleEdit.text.toString())
                 startActivity(intent)
             }
         }

@@ -68,6 +68,7 @@ class RecordingStoryActivity : AppCompatActivity() {
     private val BUTTON = 100
     private var photoUri: Uri? = null
     lateinit var filepath: String
+    lateinit var story_title: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,10 +195,11 @@ class RecordingStoryActivity : AppCompatActivity() {
                 "(" + lastLoc.latitude.toString() + ", " + lastLoc.longitude.toString() + ")"
             )
 
+            googleMap.clear()
+
             val option = MarkerOptions()
             option.position(lastLoc)
             option.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-            googleMap.clear()
             googleMap.addMarker(option)
 
             val option2 = PolylineOptions().color(Color.GREEN).addAll(locationList2)
@@ -299,6 +301,9 @@ class RecordingStoryActivity : AppCompatActivity() {
                 for (i in 0..locationList.size){
                     myDBHelper.insertLocation(locationList[i])
                 }
+                intent.putExtra("location_list", locationList)
+                intent.putExtra("picture_list", pictureList)
+                intent.putExtra("title", story_title)
                 startActivity(intent)
             }
 
@@ -386,13 +391,18 @@ class RecordingStoryActivity : AppCompatActivity() {
             startLocationUpdates()
         }
 
-        super.onResume()
-        val picture = intent.getSerializableExtra("picture") as Picture
-
-        for (p in pictureList) {
-            if (p.id == picture.id) {
-                p.title = picture.title
+        if (intent.hasExtra("picture")) {
+            val picture = intent.getSerializableExtra("picture") as Picture
+            for (p in pictureList) {
+                if (p.id == picture.id) {
+                    p.title = picture.title
+                    // p.comment = picture.comment
+                }
             }
+        }
+
+        if (intent.hasExtra("title")) {
+            story_title = intent.getStringExtra("title").toString()
         }
     }
 

@@ -22,6 +22,8 @@ class CommentStoryActivity : AppCompatActivity() {
     private var backPressedTime: Long = 0
     lateinit var adapter: PicListAdapter
     var pictureList = ArrayList<Picture>()
+    lateinit var locationList: ArrayList<Location>
+    lateinit var story_title: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,7 @@ class CommentStoryActivity : AppCompatActivity() {
         setContentView(binding.root)
         initRecyclerView()
         initToolbar()
+        getIntentData()
         init()
     }
 
@@ -61,6 +64,13 @@ class CommentStoryActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_new_24)
     }
 
+    private fun getIntentData() {
+        // if (intent.hasExtra("location_list"))
+        locationList = intent.getSerializableExtra("location_list") as ArrayList<Location>
+        pictureList = intent.getSerializableExtra("picture_list") as ArrayList<Picture>
+        story_title = intent.getStringExtra("title").toString()
+    }
+
     private fun init() {
     }
 
@@ -87,7 +97,7 @@ class CommentStoryActivity : AppCompatActivity() {
                     arrayListOf<Location>(sampleLocation, sampleLocation2, sampleLocation3)
                 val picList = arrayListOf<Location>(sampleLocation2)
 
-                val sampleStory = Story(
+                /*val sampleStory = Story(
                     0,
                     LocalDate.of(2021, 1, 1),
                     "Sample Name",
@@ -95,7 +105,23 @@ class CommentStoryActivity : AppCompatActivity() {
                     trackList as ArrayList<Location>,
                     picList as ArrayList<Location>
                 )
-                intent.putExtra("story", sampleStory)
+                intent.putExtra("story", sampleStory)*/
+
+                val picLocList = ArrayList<Location>()
+
+                for (p in pictureList) {
+                    picLocList.add(Location(p.lat, p.long))
+                }
+
+                val story = Story(
+                    0,
+                    LocalDate.now(),
+                    binding.storyTitleEdit.text.toString(),
+                    binding.storyCommentEdit.text.toString(),
+                    locationList,
+                    picLocList
+                )
+                intent.putExtra("story", story)
                 startActivity(intent)
             }
         }
@@ -119,13 +145,28 @@ class CommentStoryActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val picture = intent.getSerializableExtra("picture") as Picture
 
-        for (p in pictureList) {
-            if (p.id == picture.id) {
-                p.title = picture.title
-                // p.comment = picture.comment
+        if (intent.hasExtra("picture")) {
+            val picture = intent.getSerializableExtra("picture") as Picture
+
+            for (p in pictureList) {
+                if (p.id == picture.id) {
+                    p.title = picture.title
+                    // p.comment = picture.comment
+                }
             }
+        }
+
+        if (intent.hasExtra("location_list")) {
+            locationList = intent.getSerializableExtra("location_list") as ArrayList<Location>
+        }
+
+        if (intent.hasExtra("picture_list")) {
+            pictureList = intent.getSerializableExtra("picture_list") as ArrayList<Picture>
+        }
+
+        if (intent.hasExtra("title")) {
+            binding.storyTitleEdit.setText(intent.getStringExtra("title").toString())
         }
     }
 }
