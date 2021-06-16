@@ -96,23 +96,22 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnP
                 map.addMarker(markerOptions)
             }
 
-//            map.setOnMarkerClickListener {
-//                it.position
-//                var pTitle = ""
-//                var pPath = ""
-//                for (p in picture) {
-//                    if (it.position == LatLng(p.lat, p.long)) {
-//                        pTitle =
-//                    }
-//                }
-//                val intent = Intent(this, ShowImageActivity::class.java)
-//                val path = "./image"
-//                intent.putExtra("title", xy.title)
-//                intent.putExtra("path", path)
-////                    Toast.makeText(this, "marker click!", Toast.LENGTH_SHORT).show()
-//                startActivity(intent)
-//                false
-//            }
+            map.setOnMarkerClickListener {
+                it.position
+                var pTitle = ""
+                var pPath = ""
+                for (p in picture) {
+                    if (it.position == LatLng(p.lat, p.long)) {
+                        pTitle = p.title
+                        pPath = p.path
+                    }
+                }
+                val intent = Intent(this, ShowImageActivity::class.java)
+                intent.putExtra("title", pTitle)
+                intent.putExtra("path", pPath)
+                startActivity(intent)
+                false
+            }
 
             val middleXY = LatLng(averageX / route.size, averageY / route.size)
 
