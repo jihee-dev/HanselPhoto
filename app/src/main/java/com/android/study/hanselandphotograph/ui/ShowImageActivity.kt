@@ -28,8 +28,10 @@ class ShowImageActivity : AppCompatActivity() {
 
     private fun init() {
         val intent = intent
+        val title = intent.getStringExtra("title")
+        binding.toolbar.title = title
         val path = intent.getStringExtra("path")
-//        Toast.makeText(this, path, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, path, Toast.LENGTH_LONG).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

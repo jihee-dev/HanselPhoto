@@ -115,11 +115,9 @@ class CommentStoryActivity : AppCompatActivity() {
 
                 val story = Story(
                     0,
-                    LocalDate.now(),
+                    LocalDate.now().toString(),
                     binding.storyTitleEdit.text.toString(),
-                    binding.storyCommentEdit.text.toString(),
-                    locationList,
-                    picLocList
+                    binding.storyCommentEdit.text.toString()
                 )
                 intent.putExtra("story", story)
                 startActivity(intent)

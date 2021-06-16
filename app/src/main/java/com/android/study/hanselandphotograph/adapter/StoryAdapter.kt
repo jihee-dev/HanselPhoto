@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.study.hanselandphotograph.databinding.RowStoryBinding
 import com.android.study.hanselandphotograph.model.Story
 
-class StoryAdapter(private val storys: ArrayList<Story>): RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
+class StoryAdapter(var storys: ArrayList<Story>): RecyclerView.Adapter<StoryAdapter.ViewHolder>() {
 
     interface OnStoryClickListener {
         fun onStoryClick(holder: ViewHolder, story: Story)
