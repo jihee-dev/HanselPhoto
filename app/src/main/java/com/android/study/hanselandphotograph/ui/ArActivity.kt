@@ -88,14 +88,14 @@ class ArActivity : AppCompatActivity() {
                     locationScene = LocationScene(this, arSceneView)
 
                     for (i in data.indices) {
-//                        base[i].setOnTapListener { hitTestResult, motionEvent ->
-//                            val arFragment = com.android.study.hanselandphotograph.ui.ArFragment()
-//                            var args = Bundle()
-//                            args.putString("title", data[i].title)
-//                            args.putString("path", data[i].path)
-//                            arFragment.arguments = args
-//                            arFragment.show(this.supportFragmentManager, "arFrag")
-//                        }
+                        base[i].setOnTapListener { hitTestResult, motionEvent ->
+                            val arFragment = com.android.study.hanselandphotograph.ui.ArFragment()
+                            var args = Bundle()
+                            args.putString("title", data[i].title)
+                            args.putString("path", data[i].path)
+                            arFragment.arguments = args
+                            arFragment.show(this.supportFragmentManager, "arFrag")
+                        }
                         Toast.makeText(this, data[i].lat.toString() + ", " + data[i].lng.toString(), Toast.LENGTH_SHORT).show()
                         var locationMarker = LocationMarker(data[i].lat, data[i].lng, base[i])
                         locationMarker.setRenderEvent {

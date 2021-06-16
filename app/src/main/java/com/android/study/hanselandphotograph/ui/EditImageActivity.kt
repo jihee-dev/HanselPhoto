@@ -51,7 +51,7 @@ class EditImageActivity : AppCompatActivity() {
             }
 
             R.id.action_save -> {
-                Toast.makeText(applicationContext, "스토리 저장", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "이미지 저장", Toast.LENGTH_SHORT).show()
 
                 // default Recording Activity, flag == 1
                 var intent = Intent(this@EditImageActivity, RecordingStoryActivity::class.java)

@@ -298,7 +298,7 @@ class RecordingStoryActivity : AppCompatActivity() {
             finishRecordBtn.setOnClickListener {
                 val intent =
                     Intent(this@RecordingStoryActivity, CommentStoryActivity::class.java)
-                for (i in 0..locationList.size){
+                for (i in 0..locationList.size - 1){
                     myDBHelper.insertLocation(locationList[i])
                 }
                 intent.putExtra("location_list", locationList)
