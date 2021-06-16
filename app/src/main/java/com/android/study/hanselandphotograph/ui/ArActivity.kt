@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
+import com.android.study.hanselandphotograph.model.ARData
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Config
 import com.google.ar.core.Session
@@ -19,16 +21,17 @@ import com.google.ar.sceneform.rendering.ViewRenderable
 import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
+import java.io.FileOutputStream
 import java.util.concurrent.CompletableFuture
 
 class ArActivity : AppCompatActivity() {
     private lateinit var arSceneView: ArSceneView
     private var locationScene: LocationScene? = null
 
-    //    lateinit var myDBHelper: MyDBHelper
+    lateinit var myDBHelper: MyDBHelper
     var installRequested = false
     var hasFinishedLoading = false
-//    var data: ArrayList<ARData>
+    var data = ArrayList<ARData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,15 +41,20 @@ class ArActivity : AppCompatActivity() {
 
         initDB()
 
-        val base = Node()
-        base.setOnTapListener { hitTestResult, motionEvent ->
-            val arFragment = com.android.study.hanselandphotograph.ui.ArFragment()
-            var args = Bundle()
-            args.putString("title", "test")
-            args.putString("path", "")
-            arFragment.arguments = args
-            arFragment.show(this.supportFragmentManager, "arFrag")
+        val base = ArrayList<Node>()
+        for(i in data) {
+            base.add(Node())
         }
+//        base.setOnTapListener { hitTestResult, motionEvent ->
+//            hitTestResult
+//            base.
+//            val arFragment = com.android.study.hanselandphotograph.ui.ArFragment()
+//            var args = Bundle()
+//            args.putString("title", "test")
+//            args.putString("path", "")
+//            arFragment.arguments = args
+//            arFragment.show(this.supportFragmentManager, "arFrag")
+//        }
 
         val exampleLayout = ViewRenderable.builder()
             .setView(this, R.layout.renderable)
@@ -61,7 +69,9 @@ class ArActivity : AppCompatActivity() {
                 try {
                     exampleLayoutRenderable = exampleLayout.get()
                     hasFinishedLoading = true
-                    base.renderable = exampleLayoutRenderable
+                    for (i in data.indices) {
+                        base[i].renderable = exampleLayoutRenderable
+                    }
                 } catch (ex: Exception) {
                     Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
                 }
@@ -77,22 +87,22 @@ class ArActivity : AppCompatActivity() {
                 if (locationScene == null) {
                     locationScene = LocationScene(this, arSceneView)
 
-
-                    var layoutLocationMarker = LocationMarker(37.541636, 127.077324, base)
-                    layoutLocationMarker.setRenderEvent { locationNode ->
-                        exampleLayoutRenderable.view.findViewById<TextView>(R.id.arTitle).text =
-                            "test"
+                    for (i in data.indices) {
+//                        base[i].setOnTapListener { hitTestResult, motionEvent ->
+//                            val arFragment = com.android.study.hanselandphotograph.ui.ArFragment()
+//                            var args = Bundle()
+//                            args.putString("title", data[i].title)
+//                            args.putString("path", data[i].path)
+//                            arFragment.arguments = args
+//                            arFragment.show(this.supportFragmentManager, "arFrag")
+//                        }
+                        Toast.makeText(this, data[i].lat.toString() + ", " + data[i].lng.toString(), Toast.LENGTH_SHORT).show()
+                        var locationMarker = LocationMarker(data[i].lat, data[i].lng, base[i])
+                        locationMarker.setRenderEvent {
+                            exampleLayoutRenderable.view.findViewById<TextView>(R.id.arTitle).text = data[i].title
+                        }
+                        locationScene?.mLocationMarkers?.add(locationMarker)
                     }
-                    locationScene?.mLocationMarkers?.add(layoutLocationMarker)
-                    var lmarker2 = LocationMarker(37.542206, 127.077345, base)
-                    locationScene?.mLocationMarkers?.add(lmarker2)
-                    var lmarker3 = LocationMarker(37.540088, 127.076522, base)
-                    locationScene?.mLocationMarkers?.add(lmarker3)
-                    var lmarker4 = LocationMarker(37.542281, 127.077072, base)
-                    locationScene?.mLocationMarkers?.add(lmarker4)
-                    var lmarker5 = LocationMarker(37.542592, 127.077316, base)
-                    locationScene?.mLocationMarkers?.add(lmarker5)
-                    layoutLocationMarker.anchorNode?.isEnabled = true
 
                     locationScene?.refreshAnchors()
                 }
@@ -110,7 +120,24 @@ class ArActivity : AppCompatActivity() {
     }
 
     private fun initDB() {
+//        val dbfile = getDatabasePath("db1.db")
+//        if(!dbfile.parentFile.exists()) {
+//            dbfile.parentFile.mkdir()
+//        }
+//        if(!dbfile.exists()) {
+//            val file = resources.openRawResource(R.raw.db1)
+//            val fileSize = file.available()
+//            val buffer = ByteArray(fileSize)
+//            file.read(buffer)
+//            file.close()
+//            dbfile.createNewFile()
+//            val output = FileOutputStream(dbfile)
+//            output.write(buffer)
+//            output.close()
+//        }
 
+        myDBHelper = MyDBHelper(this)
+        myDBHelper.arSearch()
     }
 
     override fun onResume() {
