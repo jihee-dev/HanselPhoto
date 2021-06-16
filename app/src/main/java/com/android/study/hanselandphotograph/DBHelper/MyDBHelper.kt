@@ -4,9 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.android.study.hanselandphotograph.model.ARData
 import com.android.study.hanselandphotograph.model.Location
 import com.android.study.hanselandphotograph.model.Picture
 import com.android.study.hanselandphotograph.model.Story
+import com.android.study.hanselandphotograph.ui.ArActivity
 
 class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     companion object{
@@ -40,19 +42,19 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
                 "$STORY_ROUTE text, "+
                 "$STORY_PICTURE text);"
         val create_locTable = "create table if not exists $LOC_TABLE("+
-                "$LOC_ID autoincrement, "+
+                "$LOC_ID integer, "+
                 "$STORY_ID integer, "+
                 "$LOC_LAT real, "+
-                "$LOC_LONG real "+
-                "primary key ($LOC_ID, $STORY_ID));"
+                "$LOC_LONG real, "+
+                "primary key($LOC_ID, $STORY_ID));"
         val create_picTable = "create table if not exists $PIC_TABLE("+
-                "$PIC_ID autoincrement, "+
+                "$PIC_ID integer, "+
                 "$STORY_ID integer, "+
                 "$PIC_TITLE text, "+
                 "$PIC_PATH text, "+
                 "$PIC_LAT real, "+
                 "$PIC_LONG real, "+
-                "primary key ($PIC_ID, $STORY_ID));"
+                "primary key($PIC_ID, $STORY_ID));"
         db!!.execSQL(create_storyTable)
         db!!.execSQL(create_locTable)
         db!!.execSQL(create_picTable)
@@ -82,9 +84,30 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         return sID
     }
 
+    fun selectLocID(dat: Int): Int {
+        val strsql = "select count(*) from $LOC_TABLE where $STORY_ID = 'dat';"
+        val db = readableDatabase
+        val cursor = db.rawQuery(strsql, null)
+        val flag = cursor.count
+        cursor.close()
+        db.close()
+        return flag
+    }
+
+    fun selectPicID(dat: Int): Int {
+        val strsql = "select count(*) from $PIC_TABLE where $STORY_ID = 'dat';"
+        val db = readableDatabase
+        val cursor = db.rawQuery(strsql, null)
+        val flag = cursor.count
+        cursor.close()
+        db.close()
+        return flag
+    }
+
     fun insertLocation(location:Location):Boolean{
         val sID = getStoryID()
         val values = ContentValues()
+        values.put(LOC_ID, selectLocID(sID))
         values.put(STORY_ID, sID)
         values.put(LOC_LAT, location.x)
         values.put(LOC_LONG, location.y)
@@ -97,6 +120,7 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
     fun insertPicture(picture:Picture):Boolean{
         val sID = getStoryID()
         val values = ContentValues()
+        values.put(PIC_ID, selectPicID(sID))
         values.put(STORY_ID, sID)
         values.put(PIC_TITLE, picture.title)
         values.put(PIC_PATH, picture.path)
@@ -119,5 +143,20 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         return flag
     }
 
-
+    fun arSearch(): Boolean {
+        val strsql = "select * from $PIC_TABLE;"
+        val db = readableDatabase
+        val cursor = db.rawQuery(strsql, null)
+        val flag = cursor.count != 0
+        if (flag) {
+            val activity = context as ArActivity
+            cursor.moveToFirst()
+            do {
+                activity.data.add(ARData(cursor.getDouble(4), cursor.getDouble(5), cursor.getString(2), cursor.getString(3)))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return flag
+    }
 }
