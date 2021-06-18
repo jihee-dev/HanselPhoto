@@ -54,7 +54,7 @@ class RecordingStoryActivity : AppCompatActivity() {
     var isFirstGPS = true
     var loc = LatLng(37.554752, 126.970631)
     var lastLoc = LatLng(0.0, 0.0)
-    var locationList = ArrayList<Location>()
+    var locationList = ArrayList<com.android.study.hanselandphotograph.model.Location>()
     var locationList2 = ArrayList<LatLng>()
     var pictureList = ArrayList<Picture>()
     var picNum = 0
@@ -284,7 +284,9 @@ class RecordingStoryActivity : AppCompatActivity() {
             finishRecordBtn.setOnClickListener {
                 val intent =
                     Intent(this@RecordingStoryActivity, CommentStoryActivity::class.java)
-                for (i in 0..locationList.size - 1){
+                for (i in 0 until locationList.size){
+                    /*Log.i("RecordingStroyActivity: InsertLocation - ", "i: " + i + "location: " + locationList[i].toString())
+                    Log.i("RecordingStroyActivity: InsertLocation - ", "is Location Type?: " + (locationList[i] is Location).toString())*/
                     myDBHelper.insertLocation(locationList[i])
                 }
                 intent.putExtra("location_list", locationList)
