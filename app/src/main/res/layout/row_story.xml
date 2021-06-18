@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/rowStoryDate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|end"
+        android:paddingRight="10dp"
+        android:text="date"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/rowStoryName"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:gravity="center"
-        android:text="Story" />
+        android:layout_height="60dp"
+        android:gravity="center|top"
+        android:text="Story"
+        android:textSize="25sp" />
 </LinearLayout>

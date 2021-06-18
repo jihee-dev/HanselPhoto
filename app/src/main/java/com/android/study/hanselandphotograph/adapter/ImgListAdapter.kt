@@ -1,5 +1,6 @@
 package com.android.study.hanselandphotograph.adapter
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ class ImgListAdapter(private val imgs: ArrayList<Picture>): RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.imageTitle.text = imgs[position].title
-        holder.binding.imageView.setImageURI(Uri.parse(imgs[position].path))
+        val bitmap = BitmapFactory.decodeFile(imgs[position].path)
+        holder.binding.imageView.setImageBitmap(bitmap)
     }
 }
