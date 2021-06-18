@@ -119,7 +119,7 @@ class CommentStoryActivity : AppCompatActivity() {
                     picLocList.add(Location(p.lat, p.long))
                 }
 
-                val story = Story(
+                var story = Story(
                     0,
                     LocalDate.now().toString(),
                     binding.storyTitleEdit.text.toString(),
@@ -138,7 +138,7 @@ class CommentStoryActivity : AppCompatActivity() {
                     myDBHelper.insertPicture(pictureList[i])
                 }
 
-                intent.putExtra("story", story)
+                intent.putExtra("story", myDBHelper.getStory(myDBHelper.getStoryID()))
                 startActivity(intent)
             }
         }

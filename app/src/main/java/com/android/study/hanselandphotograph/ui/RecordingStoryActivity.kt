@@ -57,12 +57,6 @@ class RecordingStoryActivity : AppCompatActivity() {
     var pictureList = ArrayList<Picture>()
     var picNum = 0
 
-    val PERMISSIONS = arrayOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    )
-    val PERMISSIONS_REQUEST = 100
     private val BUTTON = 100
     private var photoUri: Uri? = null
     lateinit var filepath: String
@@ -295,7 +289,6 @@ class RecordingStoryActivity : AppCompatActivity() {
 
             addImageBtn.setOnClickListener {
                 // select image from gallery or camera
-                checkPermissions(PERMISSIONS, PERMISSIONS_REQUEST)
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 val photoFile = File(
                     File("${filesDir}/image").apply {
@@ -317,25 +310,6 @@ class RecordingStoryActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun checkPermissions(permissions: Array<String>, permissionsRequest: Int): Boolean {
-        val permissionList: MutableList<String> = mutableListOf()
-        for (permission in permissions) {
-            val result = ContextCompat.checkSelfPermission(this, permission)
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                permissionList.add(permission)
-            }
-        }
-        if (permissionList.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                this,
-                permissionList.toTypedArray(),
-                permissionsRequest
-            )
-            return false
-        }
-        return true
     }
 
     private fun newJpgFileName(): String {

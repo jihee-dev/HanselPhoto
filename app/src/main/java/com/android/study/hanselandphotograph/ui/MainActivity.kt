@@ -1,6 +1,8 @@
 package com.android.study.hanselandphotograph.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -9,6 +11,8 @@ import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
@@ -36,6 +40,13 @@ class MainActivity : AppCompatActivity() {
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
 
+    // camera permission
+    val PERMISSIONS = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+    val PERMISSIONS_REQUEST = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -197,6 +208,27 @@ class MainActivity : AppCompatActivity() {
             }
             mainRecyclerView.adapter = adapter
         }
+
+        checkPermissions(PERMISSIONS, PERMISSIONS_REQUEST)
+    }
+
+    private fun checkPermissions(permissions: Array<String>, permissionsRequest: Int): Boolean {
+        val permissionList: MutableList<String> = mutableListOf()
+        for (permission in permissions) {
+            val result = ContextCompat.checkSelfPermission(this, permission)
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(permission)
+            }
+        }
+        if (permissionList.isNotEmpty()) {
+            ActivityCompat.requestPermissions(
+                this,
+                permissionList.toTypedArray(),
+                permissionsRequest
+            )
+            return false
+        }
+        return true
     }
 
     override fun onBackPressed() {

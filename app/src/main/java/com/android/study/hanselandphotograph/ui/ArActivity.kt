@@ -1,7 +1,11 @@
 package com.android.study.hanselandphotograph.ui
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +43,7 @@ class ArActivity : AppCompatActivity() {
 
         arSceneView = findViewById(R.id.arSceneView)
 
+        showLocationServicesSetting()
         initDB()
 
         val base = ArrayList<Node>()
@@ -86,6 +91,7 @@ class ArActivity : AppCompatActivity() {
                 }
                 if (locationScene == null) {
                     locationScene = LocationScene(this, arSceneView)
+                    var arheight: Double = 1.0
 
                     for (i in data.indices) {
                         base[i].setOnTapListener { hitTestResult, motionEvent ->
@@ -98,6 +104,10 @@ class ArActivity : AppCompatActivity() {
                         }
                         Toast.makeText(this, data[i].lat.toString() + ", " + data[i].lng.toString(), Toast.LENGTH_SHORT).show()
                         var locationMarker = LocationMarker(data[i].lat, data[i].lng, base[i])
+                        locationMarker.height = arheight.toFloat()
+                        arheight += 0.3
+                        if (arheight > 3)
+                            arheight = 1.0
                         locationMarker.setRenderEvent {
                             exampleLayoutRenderable.view.findViewById<TextView>(R.id.arTitle).text = data[i].title
                         }
@@ -184,6 +194,19 @@ class ArActivity : AppCompatActivity() {
         super.onDestroy()
         arSceneView.destroy()
     }
+
+    private fun showLocationServicesSetting() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("위치 서비스 비활성화")
+        builder.setMessage("AR을 사용하기 위해서는 위치 서비스가 필요합니다.\n" + "위치 설정을 허용하겠습니까?")
+        builder.setPositiveButton("설정", DialogInterface.OnClickListener { dialog, id ->
+            val GpsSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivityForResult(GpsSettingIntent, 1000)
+        })
+        builder.create().show()
+    }
+
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

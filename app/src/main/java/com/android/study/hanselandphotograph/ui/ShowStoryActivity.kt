@@ -71,12 +71,14 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
 
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.showStoryMap) as SupportMapFragment
+
+//        initMarker()
+
+
         mapFragment.getMapAsync(this)
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        Log.i("story", "1")
-        map = googleMap
+    private fun initMarker() {
         if (route.size != 0) {
             val polyLineOptions = PolylineOptions()
             polyLineOptions.color(0xffff0000.toInt())
@@ -130,7 +132,12 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
 
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(middleXY, 16f))
         }
+    }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        Log.i("story", "1")
+        map = googleMap
+        initMarker()
     }
 
     override fun onPolylineClick(googleMap: Polyline) {
