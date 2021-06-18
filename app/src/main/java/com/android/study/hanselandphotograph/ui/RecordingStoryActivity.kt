@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.PicGridListAdapter
+import com.android.study.hanselandphotograph.databinding.ActivityRecordingStoryBinding
 
 import com.android.study.hanselandphotograph.model.Location
 import com.android.study.hanselandphotograph.model.Picture
