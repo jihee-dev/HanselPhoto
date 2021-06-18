@@ -14,18 +14,18 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
-import com.android.study.hanselandphotograph.adapter.PicListAdapter
+import com.android.study.hanselandphotograph.adapter.PicGridListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityRecordingStoryBinding
+
 import com.android.study.hanselandphotograph.model.Location
 import com.android.study.hanselandphotograph.model.Picture
 import com.google.android.gms.location.*
@@ -41,7 +41,7 @@ import kotlin.math.*
 
 class RecordingStoryActivity : AppCompatActivity() {
     lateinit var binding: ActivityRecordingStoryBinding
-    lateinit var adapter: PicListAdapter
+    lateinit var adapter: PicGridListAdapter
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
 
@@ -54,7 +54,7 @@ class RecordingStoryActivity : AppCompatActivity() {
     var isFirstGPS = true
     var loc = LatLng(37.554752, 126.970631)
     var lastLoc = LatLng(0.0, 0.0)
-    var locationList = ArrayList<Location>()
+    var locationList = ArrayList<com.android.study.hanselandphotograph.model.Location>()
     var locationList2 = ArrayList<LatLng>()
     var pictureList = ArrayList<Picture>()
     var picNum = 0
@@ -81,22 +81,8 @@ class RecordingStoryActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        adapter = PicListAdapter(pictureList)
-        adapter.itemClickListener = object : PicListAdapter.OnItemClickListener {
-            override fun onItemClick(
-                holder: PicListAdapter.ViewHolder,
-                view: View,
-                data: Picture,
-                position: Int
-            ) {
-                val intent = Intent(this@RecordingStoryActivity, EditImageActivity::class.java)
-                intent.putExtra("picture", data)
-                startActivity(intent)
-            }
-        }
-
+        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
+        adapter = PicGridListAdapter(pictureList)
         binding.recyclerView.adapter = adapter
     }
 
@@ -298,7 +284,9 @@ class RecordingStoryActivity : AppCompatActivity() {
             finishRecordBtn.setOnClickListener {
                 val intent =
                     Intent(this@RecordingStoryActivity, CommentStoryActivity::class.java)
-                for (i in 0..locationList.size - 1){
+                for (i in 0 until locationList.size){
+                    /*Log.i("RecordingStroyActivity: InsertLocation - ", "i: " + i + "location: " + locationList[i].toString())
+                    Log.i("RecordingStroyActivity: InsertLocation - ", "is Location Type?: " + (locationList[i] is Location).toString())*/
                     myDBHelper.insertLocation(locationList[i])
                 }
                 intent.putExtra("location_list", locationList)
@@ -389,20 +377,6 @@ class RecordingStoryActivity : AppCompatActivity() {
         Log.i("location", "onResume()")
         if (!startUpdate) {
             startLocationUpdates()
-        }
-
-        if (intent.hasExtra("picture")) {
-            val picture = intent.getSerializableExtra("picture") as Picture
-            for (p in pictureList) {
-                if (p.id == picture.id) {
-                    p.title = picture.title
-                    // p.comment = picture.comment
-                }
-            }
-        }
-
-        if (intent.hasExtra("title")) {
-            story_title = intent.getStringExtra("title").toString()
         }
     }
 

@@ -44,25 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@color/design_default_color_secondary"
+            android:background="@color/background_gray"
             android:hint="사진 제목을 입력해 주세요."
-            android:padding="12dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="사진 설명"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/pic_comment_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@color/design_default_color_secondary"
-            android:hint="사진 설명을 입력해 주세요."
             android:padding="12dp" />
 
     </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.PicListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityCommentStoryBinding
@@ -24,6 +25,8 @@ class CommentStoryActivity : AppCompatActivity() {
     var pictureList = ArrayList<Picture>()
     lateinit var locationList: ArrayList<Location>
     lateinit var story_title: String
+    lateinit var myDBHelper: MyDBHelper
+    private val EDIT_IMAGE_REQUEST = 7777
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +51,7 @@ class CommentStoryActivity : AppCompatActivity() {
             ) {
                 val intent = Intent(this@CommentStoryActivity, EditImageActivity::class.java)
                 intent.putExtra("picture", data)
-                startActivity(intent)
+                startActivityForResult(intent, EDIT_IMAGE_REQUEST)
             }
         }
 
@@ -72,6 +75,7 @@ class CommentStoryActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        myDBHelper = MyDBHelper(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -119,6 +123,7 @@ class CommentStoryActivity : AppCompatActivity() {
                     binding.storyTitleEdit.text.toString(),
                     binding.storyCommentEdit.text.toString()
                 )
+                myDBHelper.insertStory(story)
                 intent.putExtra("story", story)
                 startActivity(intent)
             }
@@ -138,6 +143,24 @@ class CommentStoryActivity : AppCompatActivity() {
         } else {
             backPressedTime = tempTime
             Toast.makeText(applicationContext, "한번 더 누르면 작성한 기록이 삭제됩니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            EDIT_IMAGE_REQUEST -> {
+                if ((resultCode == RESULT_OK) && (data != null)) {
+                    val picture = data.getSerializableExtra("picture") as Picture
+                    for (p in pictureList) {
+                        if (p.id == picture.id) {
+                            p.title = picture.title
+                            // p.comment = picture.comment
+                        }
+                    }
+                    story_title = data.getStringExtra("title").toString()
+                }
+            }
         }
     }
 
