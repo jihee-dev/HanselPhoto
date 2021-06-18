@@ -20,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import java.time.LocalDate
+import kotlin.math.sqrt
 
 class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
     GoogleMap.OnPolylineClickListener {
@@ -92,8 +93,18 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
             }
             map.addPolyline(polyLineOptions)
 
-            Log.i("ShowStoryActivity Image Marker: ", picture[0].toString())
+            for (i in 1 until picture.size) {
+                for (j in 0 until i) {
+                    if (getDistance(picture[i], picture[j]) < 0.0001) {
+                        picture[i].lat = picture[j].lat
+                        picture[i].long = picture[j].long
+                        picture[i].id = 100
+                    }
+                }
+            }
+
             for (xy in picture) {
+                if (xy.id == 100) continue
                 val markerOptions = MarkerOptions()
                 markerOptions.position(LatLng(xy.lat, xy.long))
                 val cameraIcon = BitmapFactory.decodeResource(resources, R.drawable.camera_icon)
@@ -112,18 +123,17 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
             }
 
             map.setOnMarkerClickListener {
-                it.position
-                var pTitle = ""
-                var pPath = ""
+                val pTitle = arrayListOf<String>()
+                val pPath = arrayListOf<String>()
                 for (p in picture) {
                     if (it.position == LatLng(p.lat, p.long)) {
-                        pTitle = p.title
-                        pPath = p.path
+                        pTitle.add(p.title)
+                        pPath.add(p.path)
                     }
                 }
                 val intent = Intent(this, ShowImageActivity::class.java)
-                intent.putExtra("title", pTitle)
-                intent.putExtra("path", pPath)
+                intent.putStringArrayListExtra("title", pTitle)
+                intent.putStringArrayListExtra("path", pPath)
                 startActivity(intent)
                 false
             }
@@ -159,4 +169,6 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
+
+    fun getDistance(picture1: Picture, picture2: Picture) = sqrt((picture1.lat-picture2.lat)*(picture1.lat-picture2.lat)+(picture1.long-picture2.long)*(picture1.long-picture2.long))
 }
