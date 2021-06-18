@@ -13,7 +13,6 @@ import com.android.study.hanselandphotograph.model.Picture
 
 class EditImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityEditImageBinding
-    var backFlag = 0
     lateinit var picture: Picture
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,23 +51,11 @@ class EditImageActivity : AppCompatActivity() {
 
             R.id.action_save -> {
                 Toast.makeText(applicationContext, "이미지 저장", Toast.LENGTH_SHORT).show()
-
-                // default Recording Activity, flag == 1
-                var intent = Intent(this@EditImageActivity, RecordingStoryActivity::class.java)
-
-                if (backFlag == 2) { // Comment Activity
-                    intent = Intent(this@EditImageActivity, CommentStoryActivity::class.java)
-                } else if (backFlag != 1) {
-                    Toast.makeText(this, "Change Activity Error", Toast.LENGTH_SHORT).show()
-                }
-
-                // put sample data
+                val intent = Intent()
                 picture.title = binding.picTitleEdit.text.toString()
-                // picture.comment = binding.picCommentEdit.text.toString()
-
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 intent.putExtra("picture", picture)
-                startActivity(intent)
+                setResult(RESULT_OK, intent)
+                finish()
             }
         }
 

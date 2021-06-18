@@ -17,8 +17,7 @@ import com.android.study.hanselandphotograph.model.Picture
 import com.android.study.hanselandphotograph.model.Story
 import java.time.LocalDate
 
-class
-CommentStoryActivity : AppCompatActivity() {
+class CommentStoryActivity : AppCompatActivity() {
     lateinit var binding: ActivityCommentStoryBinding
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
@@ -26,7 +25,8 @@ CommentStoryActivity : AppCompatActivity() {
     var pictureList = ArrayList<Picture>()
     lateinit var locationList: ArrayList<Location>
     lateinit var story_title: String
-    lateinit var myDBHelper:MyDBHelper
+    lateinit var myDBHelper: MyDBHelper
+    private val EDIT_IMAGE_REQUEST = 7777
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +51,7 @@ CommentStoryActivity : AppCompatActivity() {
             ) {
                 val intent = Intent(this@CommentStoryActivity, EditImageActivity::class.java)
                 intent.putExtra("picture", data)
-                startActivity(intent)
+                startActivityForResult(intent, EDIT_IMAGE_REQUEST)
             }
         }
 
@@ -143,6 +143,24 @@ CommentStoryActivity : AppCompatActivity() {
         } else {
             backPressedTime = tempTime
             Toast.makeText(applicationContext, "한번 더 누르면 작성한 기록이 삭제됩니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            EDIT_IMAGE_REQUEST -> {
+                if ((resultCode == RESULT_OK) && (data != null)) {
+                    val picture = data.getSerializableExtra("picture") as Picture
+                    for (p in pictureList) {
+                        if (p.id == picture.id) {
+                            p.title = picture.title
+                            // p.comment = picture.comment
+                        }
+                    }
+                    story_title = data.getStringExtra("title").toString()
+                }
+            }
         }
     }
 
