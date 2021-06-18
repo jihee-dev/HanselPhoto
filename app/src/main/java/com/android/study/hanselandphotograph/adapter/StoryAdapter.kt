@@ -33,5 +33,6 @@ class StoryAdapter(var storys: ArrayList<Story>): RecyclerView.Adapter<StoryAdap
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.rowStoryName.text = storys[position].name
+        holder.binding.rowStoryDate.text = storys[position].date
     }
 }
