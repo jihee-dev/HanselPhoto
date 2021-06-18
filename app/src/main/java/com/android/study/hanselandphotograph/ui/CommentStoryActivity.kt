@@ -32,9 +32,9 @@ class CommentStoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCommentStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        getIntentData()
         initRecyclerView()
         initToolbar()
-        getIntentData()
         init()
     }
 
@@ -72,6 +72,8 @@ class CommentStoryActivity : AppCompatActivity() {
         locationList = intent.getSerializableExtra("location_list") as ArrayList<Location>
         pictureList = intent.getSerializableExtra("picture_list") as ArrayList<Picture>
         story_title = intent.getStringExtra("title").toString()
+
+        binding.storyTitleEdit.setText(story_title)
     }
 
     private fun init() {
@@ -123,7 +125,15 @@ class CommentStoryActivity : AppCompatActivity() {
                     binding.storyTitleEdit.text.toString(),
                     binding.storyCommentEdit.text.toString()
                 )
+
                 myDBHelper.insertStory(story)
+
+                for (i in 0 until locationList.size) {
+                    /*Log.i("RecordingStroyActivity: InsertLocation - ", "i: " + i + "location: " + locationList[i].toString())
+                    Log.i("RecordingStroyActivity: InsertLocation - ", "is Location Type?: " + (locationList[i] is Location).toString())*/
+                    myDBHelper.insertLocation(locationList[i])
+                }
+
                 intent.putExtra("story", story)
                 startActivity(intent)
             }
@@ -158,7 +168,8 @@ class CommentStoryActivity : AppCompatActivity() {
                             // p.comment = picture.comment
                         }
                     }
-                    story_title = data.getStringExtra("title").toString()
+                    adapter.notifyDataSetChanged()
+                    // story_title = data.getStringExtra("title").toString()
                 }
             }
         }
@@ -176,18 +187,6 @@ class CommentStoryActivity : AppCompatActivity() {
                     // p.comment = picture.comment
                 }
             }
-        }
-
-        if (intent.hasExtra("location_list")) {
-            locationList = intent.getSerializableExtra("location_list") as ArrayList<Location>
-        }
-
-        if (intent.hasExtra("picture_list")) {
-            pictureList = intent.getSerializableExtra("picture_list") as ArrayList<Picture>
-        }
-
-        if (intent.hasExtra("title")) {
-            binding.storyTitleEdit.setText(intent.getStringExtra("title").toString())
         }
     }
 }

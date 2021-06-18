@@ -84,14 +84,28 @@ class MyDBHelper(val context: Context): SQLiteOpenHelper(context, DB_NAME, null,
 //        return sID
 //    }
 
-    private fun getStoryID():Int{
-        val strsql = "select $STORY_ID from $STORY_TABLE order by 'desc';"
+    /*private fun getStoryID():Int{
+        val strsql = "select $STORY_ID from $STORY_TABLE order by $STORY_ID;"
         val db1 = readableDatabase
         val cursor = db1.rawQuery(strsql, null)
         cursor.moveToLast()
         val sID = cursor.getInt(0)
         cursor.close()
         db1.close()
+        return sID
+    }*/
+
+    private fun getStoryID():Int{
+        val strsql = "select count($STORY_ID) from $STORY_TABLE;"
+        val db1 = readableDatabase
+        val cursor = db1.rawQuery(strsql, null)
+        var sID = 0
+        if(cursor!=null){
+            cursor.moveToFirst()
+            sID = cursor.getInt(0)
+            cursor.close()
+            db1.close()
+        }
         return sID
     }
 

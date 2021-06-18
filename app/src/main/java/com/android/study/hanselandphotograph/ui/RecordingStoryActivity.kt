@@ -282,17 +282,18 @@ class RecordingStoryActivity : AppCompatActivity() {
         myDBHelper = MyDBHelper(this)
         binding.apply {
             finishRecordBtn.setOnClickListener {
-                val intent =
+                story_title = intent.getStringExtra("title").toString()
+
+                val newIntent =
                     Intent(this@RecordingStoryActivity, CommentStoryActivity::class.java)
-                for (i in 0 until locationList.size){
-                    /*Log.i("RecordingStroyActivity: InsertLocation - ", "i: " + i + "location: " + locationList[i].toString())
-                    Log.i("RecordingStroyActivity: InsertLocation - ", "is Location Type?: " + (locationList[i] is Location).toString())*/
-                    myDBHelper.insertLocation(locationList[i])
-                }
-                intent.putExtra("location_list", locationList)
-                intent.putExtra("picture_list", pictureList)
-                intent.putExtra("title", story_title)
-                startActivity(intent)
+
+                newIntent.putExtra("location_list", locationList)
+                newIntent.putExtra("picture_list", pictureList)
+                newIntent.putExtra("title", story_title)
+
+                Toast.makeText(this@RecordingStoryActivity, story_title, Toast.LENGTH_SHORT).show()
+                Log.i("Recording Intent Title: ", story_title)
+                startActivity(newIntent)
             }
 
             addImageBtn.setOnClickListener {
