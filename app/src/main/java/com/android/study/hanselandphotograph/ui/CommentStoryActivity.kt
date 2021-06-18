@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.PicListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityCommentStoryBinding
@@ -16,7 +17,8 @@ import com.android.study.hanselandphotograph.model.Picture
 import com.android.study.hanselandphotograph.model.Story
 import java.time.LocalDate
 
-class CommentStoryActivity : AppCompatActivity() {
+class
+CommentStoryActivity : AppCompatActivity() {
     lateinit var binding: ActivityCommentStoryBinding
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
@@ -24,6 +26,7 @@ class CommentStoryActivity : AppCompatActivity() {
     var pictureList = ArrayList<Picture>()
     lateinit var locationList: ArrayList<Location>
     lateinit var story_title: String
+    lateinit var myDBHelper:MyDBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +75,7 @@ class CommentStoryActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        myDBHelper = MyDBHelper(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -119,6 +123,7 @@ class CommentStoryActivity : AppCompatActivity() {
                     binding.storyTitleEdit.text.toString(),
                     binding.storyCommentEdit.text.toString()
                 )
+                myDBHelper.insertStory(story)
                 intent.putExtra("story", story)
                 startActivity(intent)
             }
