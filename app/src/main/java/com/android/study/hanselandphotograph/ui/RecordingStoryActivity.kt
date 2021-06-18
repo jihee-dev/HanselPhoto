@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.PicGridListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityRecordingStoryBinding
@@ -49,7 +48,6 @@ class RecordingStoryActivity : AppCompatActivity() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     lateinit var locationRequest: LocationRequest
     lateinit var locationCallback: LocationCallback
-    lateinit var myDBHelper: MyDBHelper
     var startUpdate = false
     var isFirstGPS = true
     var loc = LatLng(37.554752, 126.970631)
@@ -59,12 +57,6 @@ class RecordingStoryActivity : AppCompatActivity() {
     var pictureList = ArrayList<Picture>()
     var picNum = 0
 
-    val PERMISSIONS = arrayOf(
-        Manifest.permission.CAMERA,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    )
-    val PERMISSIONS_REQUEST = 100
     private val BUTTON = 100
     private var photoUri: Uri? = null
     lateinit var filepath: String
@@ -279,25 +271,24 @@ class RecordingStoryActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        myDBHelper = MyDBHelper(this)
         binding.apply {
             finishRecordBtn.setOnClickListener {
-                val intent =
+                story_title = intent.getStringExtra("title").toString()
+
+                val newIntent =
                     Intent(this@RecordingStoryActivity, CommentStoryActivity::class.java)
-                for (i in 0 until locationList.size){
-                    /*Log.i("RecordingStroyActivity: InsertLocation - ", "i: " + i + "location: " + locationList[i].toString())
-                    Log.i("RecordingStroyActivity: InsertLocation - ", "is Location Type?: " + (locationList[i] is Location).toString())*/
-                    myDBHelper.insertLocation(locationList[i])
-                }
-                intent.putExtra("location_list", locationList)
-                intent.putExtra("picture_list", pictureList)
-                intent.putExtra("title", story_title)
-                startActivity(intent)
+
+                newIntent.putExtra("location_list", locationList)
+                newIntent.putExtra("picture_list", pictureList)
+                newIntent.putExtra("title", story_title)
+
+                Toast.makeText(this@RecordingStoryActivity, story_title, Toast.LENGTH_SHORT).show()
+                Log.i("Recording Intent Title: ", story_title)
+                startActivity(newIntent)
             }
 
             addImageBtn.setOnClickListener {
                 // select image from gallery or camera
-                checkPermissions(PERMISSIONS, PERMISSIONS_REQUEST)
                 val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 val photoFile = File(
                     File("${filesDir}/image").apply {
@@ -319,25 +310,6 @@ class RecordingStoryActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun checkPermissions(permissions: Array<String>, permissionsRequest: Int): Boolean {
-        val permissionList: MutableList<String> = mutableListOf()
-        for (permission in permissions) {
-            val result = ContextCompat.checkSelfPermission(this, permission)
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                permissionList.add(permission)
-            }
-        }
-        if (permissionList.isNotEmpty()) {
-            ActivityCompat.requestPermissions(
-                this,
-                permissionList.toTypedArray(),
-                permissionsRequest
-            )
-            return false
-        }
-        return true
     }
 
     private fun newJpgFileName(): String {

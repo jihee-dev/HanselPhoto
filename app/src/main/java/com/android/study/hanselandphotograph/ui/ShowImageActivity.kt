@@ -1,9 +1,9 @@
 package com.android.study.hanselandphotograph.ui
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.databinding.ActivityShowImageBinding
 
@@ -31,7 +31,8 @@ class ShowImageActivity : AppCompatActivity() {
         val title = intent.getStringExtra("title")
         binding.toolbar.title = title
         val path = intent.getStringExtra("path")
-        Toast.makeText(this, path, Toast.LENGTH_LONG).show()
+        binding.imageView.setImageURI(Uri.parse(path))
+    // Toast.makeText(this, path, Toast.LENGTH_LONG).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
