@@ -1,11 +1,14 @@
 package com.android.study.hanselandphotograph.ui
 
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.study.hanselandphotograph.R
+import com.android.study.hanselandphotograph.adapter.ImgListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityShowImageBinding
+import com.android.study.hanselandphotograph.model.Picture
 
 class ShowImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityShowImageBinding
@@ -28,11 +31,15 @@ class ShowImageActivity : AppCompatActivity() {
 
     private fun init() {
         val intent = intent
-        val title = intent.getStringExtra("title")
-        binding.toolbar.title = title
-        val path = intent.getStringExtra("path")
-        binding.imageView.setImageURI(Uri.parse(path))
-    // Toast.makeText(this, path, Toast.LENGTH_LONG).show()
+        val title = intent.getStringArrayListExtra("title") as ArrayList<String>
+        val path = intent.getStringArrayListExtra("path") as ArrayList<String>
+        binding.showImgRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.showImgRecycler.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+        val picArr = arrayListOf<Picture>()
+        for (i in 0 until title.size) {
+            picArr.add(Picture(0, title[i], path[i], 0.0, 0.0))
+        }
+        binding.showImgRecycler.adapter = ImgListAdapter(picArr)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

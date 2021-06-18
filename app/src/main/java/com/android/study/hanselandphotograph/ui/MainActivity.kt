@@ -166,7 +166,8 @@ class MainActivity : AppCompatActivity() {
 //            dbHelper.insertLocation(Location(37.539536382623325, 127.07759265725673))
 //            dbHelper.insertLocation(Location(37.53949384636683, 127.07727079219362))
 //
-//            dbHelper.insertPicture(Picture(-1,"0","./0",37.54115380577998, 127.07836647449452))
+//            dbHelper.insertPicture(Picture(-1,"0.0","./0.0",37.54115380577998, 127.07836647449452))
+//            dbHelper.insertPicture(Picture(-1,"0.1","./0.1",37.54115380577998, 127.07836647449452))
 //            dbHelper.insertPicture(Picture(-1,"1","./1",37.54070824695232, 127.08074425273168))
 //            dbHelper.insertPicture(Picture(-1,"2","./2",37.539536382623325, 127.07759265725673))
 //        }
