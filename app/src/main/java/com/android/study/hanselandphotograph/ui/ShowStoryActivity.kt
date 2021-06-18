@@ -92,7 +92,6 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
             }
             map.addPolyline(polyLineOptions)
 
-            Log.i("ShowStoryActivity Image Marker: ", picture[0].toString())
             for (xy in picture) {
                 val markerOptions = MarkerOptions()
                 markerOptions.position(LatLng(xy.lat, xy.long))
@@ -108,7 +107,6 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
                     )
                 )
                 map.addMarker(markerOptions)
-                Log.i("ShowStoryActivity Image Marker: (for) ", xy.toString())
             }
 
             map.setOnMarkerClickListener {

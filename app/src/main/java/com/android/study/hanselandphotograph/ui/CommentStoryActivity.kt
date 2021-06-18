@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
@@ -41,7 +42,16 @@ class CommentStoryActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                this@CommentStoryActivity,
+                LinearLayoutManager.VERTICAL
+            )
+        )
+
         adapter = PicListAdapter(pictureList)
+
         adapter.itemClickListener = object : PicListAdapter.OnItemClickListener {
             override fun onItemClick(
                 holder: PicListAdapter.ViewHolder,

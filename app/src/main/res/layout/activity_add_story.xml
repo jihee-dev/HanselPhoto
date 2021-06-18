@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -29,7 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:hint="스토리 이름을 입력하세요"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:background="@color/background_gray"
+        android:padding="12dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -41,10 +42,10 @@
     <Button
         android:id="@+id/start_record_btn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:layout_margin="10dp"
-        android:padding="10dp"
         android:text="기록 시작"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
 
 </LinearLayout>
