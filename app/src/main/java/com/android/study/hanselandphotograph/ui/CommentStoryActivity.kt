@@ -134,6 +134,10 @@ class CommentStoryActivity : AppCompatActivity() {
                     myDBHelper.insertLocation(locationList[i])
                 }
 
+                for (i in 0 until pictureList.size) {
+                    myDBHelper.insertPicture(pictureList[i])
+                }
+
                 intent.putExtra("story", story)
                 startActivity(intent)
             }

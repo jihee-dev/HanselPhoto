@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.PicGridListAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityRecordingStoryBinding
@@ -49,7 +48,6 @@ class RecordingStoryActivity : AppCompatActivity() {
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     lateinit var locationRequest: LocationRequest
     lateinit var locationCallback: LocationCallback
-    lateinit var myDBHelper: MyDBHelper
     var startUpdate = false
     var isFirstGPS = true
     var loc = LatLng(37.554752, 126.970631)
@@ -279,7 +277,6 @@ class RecordingStoryActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        myDBHelper = MyDBHelper(this)
         binding.apply {
             finishRecordBtn.setOnClickListener {
                 story_title = intent.getStringExtra("title").toString()
