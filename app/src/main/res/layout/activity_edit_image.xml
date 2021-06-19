@@ -18,15 +18,17 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:adjustViewBounds="true"
-        android:src="@drawable/camera_icon"
-        android:padding="12dp"/>
+        android:padding="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/camera_icon" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="12dp"
         android:text="사진 제목"
         android:textSize="30sp" />
 
@@ -35,9 +37,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="24dp"
         android:background="@color/background_gray"
         android:hint="스토리 제목을 입력하세요"
+        android:maxLength="15"
         android:padding="12dp"
         android:textSize="20sp" />
 
