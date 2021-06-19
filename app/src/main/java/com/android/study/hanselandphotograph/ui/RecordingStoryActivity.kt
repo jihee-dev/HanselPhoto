@@ -266,6 +266,7 @@ class RecordingStoryActivity : AppCompatActivity() {
                 var picture = Picture(picNum, "", filepath, lastLoc.latitude, lastLoc.longitude)
                 pictureList.add(picture)
                 picNum += 1
+                adapter.notifyDataSetChanged()
             }
         }
     }
