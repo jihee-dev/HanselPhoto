@@ -15,13 +15,25 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/showImgRecycler"
-        android:layout_margin="5dp"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.tbuonomo.viewpagerdotsindicator.SpringDotsIndicator
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:src="@drawable/camera_icon"
-        android:padding="12dp"/>
+        app:dampingRatio="0.5"
+        app:dotsColor="@color/primary_dark"
+        app:dotsCornerRadius="2dp"
+        app:dotsSize="20dp"
+        app:dotsSpacing="6dp"
+        app:dotsStrokeColor="@color/primary_dark"
+        app:dotsStrokeWidth="3dp"
+        app:stiffness="300"
+        android:layout_gravity="center"
+        android:layout_margin="24dp"/>
 
 </LinearLayout>
