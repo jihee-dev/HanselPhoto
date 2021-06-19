@@ -28,7 +28,9 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:src="@drawable/camera_icon" />
+            android:src="@drawable/camera_icon"
+            android:scaleType="centerCrop"
+            android:paddingVertical="12dp"/>
     </LinearLayout>
 
 </FrameLayout>
