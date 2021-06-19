@@ -12,41 +12,33 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@drawable/camera_icon"
+        android:padding="12dp"/>
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="275dp"
-            android:layout_marginVertical="10dp"
-            android:adjustViewBounds="true"
-            android:src="@drawable/camera_icon" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="사진 제목"
+        android:textSize="30sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="사진 제목"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+    <EditText
+        android:id="@+id/pic_title_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/background_gray"
+        android:hint="스토리 제목을 입력하세요"
+        android:padding="12dp"
+        android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/pic_title_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@color/background_gray"
-            android:hint="사진 제목을 입력해 주세요."
-            android:padding="12dp" />
-
-    </LinearLayout>
 </LinearLayout>

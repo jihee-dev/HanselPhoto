@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ui.MainActivity">
 
@@ -12,32 +12,37 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <Button
-        android:id="@+id/mainInsertBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:textSize="30sp"
-        android:text="+" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mainRecyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_margin="5dp"/>
+        android:orientation="vertical"
+        android:padding="8dp">
 
-    <Button
-        android:id="@+id/mainToArBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:padding="10dp"
-        android:text="AR로 보기"
-        android:textSize="20sp" />
+        <Button
+            android:id="@+id/mainInsertBtn"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:text="+   스토리 추가"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/mainToArBtn"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:text="AR로 보기"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </LinearLayout>
 </LinearLayout>

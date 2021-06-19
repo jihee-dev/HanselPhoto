@@ -19,10 +19,7 @@ import com.android.study.hanselandphotograph.DBHelper.MyDBHelper
 import com.android.study.hanselandphotograph.R
 import com.android.study.hanselandphotograph.adapter.StoryAdapter
 import com.android.study.hanselandphotograph.databinding.ActivityMainBinding
-import com.android.study.hanselandphotograph.model.Location
-import com.android.study.hanselandphotograph.model.Picture
 import com.android.study.hanselandphotograph.model.Story
-import java.time.LocalDate
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -61,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     private fun initToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.title = "내 스토리"
+        binding.toolbar.title = "헨젤과 포토그래프"
 
         /*supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_ios_new_24)*/

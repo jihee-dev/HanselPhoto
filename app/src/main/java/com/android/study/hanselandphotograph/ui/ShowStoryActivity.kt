@@ -102,7 +102,7 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
                     }
                 }
             }
-
+            
             for (xy in picture) {
                 if (xy.id == 100) continue
                 val markerOptions = MarkerOptions()
@@ -119,7 +119,6 @@ class ShowStoryActivity : AppCompatActivity(), OnMapReadyCallback,
                     )
                 )
                 map.addMarker(markerOptions)
-                Log.i("ShowStoryActivity Image Marker: (for) ", xy.toString())
             }
 
             map.setOnMarkerClickListener {

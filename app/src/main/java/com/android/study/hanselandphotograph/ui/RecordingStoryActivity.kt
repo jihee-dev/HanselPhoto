@@ -282,7 +282,6 @@ class RecordingStoryActivity : AppCompatActivity() {
                 newIntent.putExtra("picture_list", pictureList)
                 newIntent.putExtra("title", story_title)
 
-                Toast.makeText(this@RecordingStoryActivity, story_title, Toast.LENGTH_SHORT).show()
                 Log.i("Recording Intent Title: ", story_title)
                 startActivity(newIntent)
             }
