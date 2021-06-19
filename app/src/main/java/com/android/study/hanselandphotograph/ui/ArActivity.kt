@@ -1,10 +1,15 @@
 package com.android.study.hanselandphotograph.ui
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.widget.TextView
 import android.widget.Toast
@@ -26,11 +31,20 @@ import uk.co.appoly.arcorelocation.LocationMarker
 import uk.co.appoly.arcorelocation.LocationScene
 import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper
 import java.io.FileOutputStream
+import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.ArrayList
+import kotlin.concurrent.timer
 
 class ArActivity : AppCompatActivity() {
     private lateinit var arSceneView: ArSceneView
     private var locationScene: LocationScene? = null
+
+    val resumeAR = Runnable {
+        locationScene?.resume()
+        arSceneView.resume()
+    }
+    val arHandler = Handler(Looper.getMainLooper())
 
     lateinit var myDBHelper: MyDBHelper
     var installRequested = false
@@ -39,82 +53,78 @@ class ArActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_ar)
+
+        if (!checkLocationServicesStatus()) {
+            showLocationServicesSetting()
+        }
+        initDB()
 
         arSceneView = findViewById(R.id.arSceneView)
 
-        showLocationServicesSetting()
-        initDB()
+        data.forEach {
+            val exampleLayout = ViewRenderable.builder()
+                .setView(this, R.layout.renderable)
+                .build()
 
-        val base = ArrayList<Node>()
-        for(i in data) {
-            base.add(Node())
-        }
-//        base.setOnTapListener { hitTestResult, motionEvent ->
-//            hitTestResult
-//            base.
-//            val arFragment = com.android.study.hanselandphotograph.ui.ArFragment()
-//            var args = Bundle()
-//            args.putString("title", "test")
-//            args.putString("path", "")
-//            arFragment.arguments = args
-//            arFragment.show(this.supportFragmentManager, "arFrag")
-//        }
-
-        val exampleLayout = ViewRenderable.builder()
-            .setView(this, R.layout.renderable)
-            .build()
-
-        lateinit var exampleLayoutRenderable: ViewRenderable
-        CompletableFuture.allOf(exampleLayout)
-            .handle<Any> { _, throwable ->
-                if (throwable != null) {
-                    return@handle null
-                }
-                try {
-                    exampleLayoutRenderable = exampleLayout.get()
-                    hasFinishedLoading = true
-                    for (i in data.indices) {
-                        base[i].renderable = exampleLayoutRenderable
+            lateinit var exampleLayoutRenderable: ViewRenderable
+            val base = Node()
+            CompletableFuture.anyOf(exampleLayout)
+                .handle<Any> { _, throwable ->
+                    if (throwable != null) {
+                        return@handle null
                     }
-                } catch (ex: Exception) {
-                    Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
+                    try {
+                        exampleLayoutRenderable = exampleLayout.get()
+                        exampleLayout.get().view.findViewById<TextView>(R.id.arTitle).text = it.title
+
+                        base.renderable = exampleLayoutRenderable
+                        base.setOnTapListener { hitTestResult, motionEvent ->
+                            val arFragment = ArFragment()
+                            var args = Bundle()
+                            args.putString("title", it.title)
+                            args.putString("path", it.path)
+                            arFragment.arguments = args
+                            arFragment.show(this.supportFragmentManager, "arFrag")
+                        }
+
+                        var locationMarker = LocationMarker(it.lng, it.lat, base)
+                        arHandler.postDelayed({
+                            resumeAR.run {
+                                locationMarker.scalingMode = LocationMarker.ScalingMode.FIXED_SIZE_ON_SCREEN
+
+                                locationScene?.mLocationMarkers?.add(locationMarker)
+                                locationMarker.anchorNode?.isEnabled = true
+
+                                arHandler.post {
+                                    locationScene?.refreshAnchors()
+                                }
+                            }
+
+                            locationMarker.setRenderEvent {
+                                resumeAR.run {
+//                                    Toast.makeText(this@ArActivity, it.distance.toString(), Toast.LENGTH_SHORT).show()
+                                    locationMarker.anchorNode?.isEnabled = it.distance <= 30
+                                }
+                            }
+
+                            if (data.indexOf(it) == data.size - 1) {
+                                hasFinishedLoading = true
+                            }
+                        }, 100)
+                    } catch (ex: Exception) {
+                        Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
+                    }
+                    null
                 }
-                null
-            }
+        }
 
         arSceneView
             .scene
             .addOnUpdateListener {
                 if (!hasFinishedLoading) {
                     return@addOnUpdateListener
-                }
-                if (locationScene == null) {
-                    locationScene = LocationScene(this, arSceneView)
-                    var arheight: Double = 1.0
-
-                    for (i in data.indices) {
-                        base[i].setOnTapListener { hitTestResult, motionEvent ->
-                            val arFragment = com.android.study.hanselandphotograph.ui.ArFragment()
-                            var args = Bundle()
-                            args.putString("title", data[i].title)
-                            args.putString("path", data[i].path)
-                            arFragment.arguments = args
-                            arFragment.show(this.supportFragmentManager, "arFrag")
-                        }
-                        Toast.makeText(this, data[i].lat.toString() + ", " + data[i].lng.toString(), Toast.LENGTH_SHORT).show()
-                        var locationMarker = LocationMarker(data[i].lat, data[i].lng, base[i])
-                        locationMarker.height = arheight.toFloat()
-                        arheight += 0.3
-                        if (arheight > 3)
-                            arheight = 1.0
-                        locationMarker.setRenderEvent {
-                            exampleLayoutRenderable.view.findViewById<TextView>(R.id.arTitle).text = data[i].title
-                        }
-                        locationScene?.mLocationMarkers?.add(locationMarker)
-                    }
-
-                    locationScene?.refreshAnchors()
                 }
 
                 val frame = arSceneView.arFrame ?: return@addOnUpdateListener
@@ -166,17 +176,24 @@ class ArActivity : AppCompatActivity() {
                     arSceneView.setupSession(session)
                 }
             } catch (e: UnavailableException) {
-                Toast.makeText(this, "error: $e", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "error: $e", Toast.LENGTH_SHORT).show()
+            } catch (ex: FatalException) {
+//                Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
+                finish()
             }
+        }
+
+        if (locationScene == null) {
+            locationScene = LocationScene(this, arSceneView)
         }
 
         try {
             arSceneView.resume()
         } catch (ex: CameraNotAvailableException) {
-            Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
             finish()
         } catch (ex: FatalException) {
-            Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "error: $ex", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
@@ -206,7 +223,11 @@ class ArActivity : AppCompatActivity() {
         builder.create().show()
     }
 
-
+    private fun checkLocationServicesStatus(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        //locationManager.isProviderEnabled(locationManager.NETWORK_PROVIDER)
+        return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
