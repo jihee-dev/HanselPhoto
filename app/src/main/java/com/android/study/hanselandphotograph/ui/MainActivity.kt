@@ -1,6 +1,8 @@
 package com.android.study.hanselandphotograph.ui
 
 import android.Manifest
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -127,8 +129,17 @@ class MainActivity : AppCompatActivity() {
             }
 
             mainToArBtn.setOnClickListener {
-                val intent = Intent(this@MainActivity, ArActivity::class.java)
-                startActivity(intent)
+                val openglVer = (this@MainActivity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                    .deviceConfigurationInfo
+                    .glEsVersion
+//                Toast.makeText(this, openglVer.toString(), Toast.LENGTH_SHORT).show()
+                if (openglVer.toDouble() < 3.0) {
+                    Toast.makeText(this@MainActivity, "opengl es 3.0이상이 필요합니다.", Toast.LENGTH_SHORT).show()
+//                    finish()
+                } else {
+                    val intent = Intent(this@MainActivity, ArActivity::class.java)
+                    startActivity(intent)
+                }
             }
             mainRecyclerView.layoutManager =
                 LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
