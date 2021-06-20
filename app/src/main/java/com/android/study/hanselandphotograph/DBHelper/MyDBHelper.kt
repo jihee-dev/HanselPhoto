@@ -37,13 +37,14 @@ class MyDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME, null
                 "$STORY_ID integer primary key autoincrement, " +
                 "$STORY_DATE text, " +
                 "$STORY_NAME text, " +
-                "$STORY_COMMENT text);"
+                "$STORY_COMMENT text;"
         val create_locTable = "create table if not exists $LOC_TABLE(" +
                 "$LOC_ID integer, " +
                 "$STORY_ID integer, " +
                 "$LOC_LAT real, " +
                 "$LOC_LONG real, " +
-                "primary key($LOC_ID, $STORY_ID));"
+                "primary key($LOC_ID, $STORY_ID)" +
+                "foreign key($STORY_ID) references $STORY_TABLE($STORY_ID));"
         val create_picTable = "create table if not exists $PIC_TABLE(" +
                 "$PIC_ID integer, " +
                 "$STORY_ID integer, " +
@@ -51,7 +52,8 @@ class MyDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME, null
                 "$PIC_PATH text, " +
                 "$PIC_LAT real, " +
                 "$PIC_LONG real, " +
-                "primary key($PIC_ID, $STORY_ID));"
+                "primary key($PIC_ID, $STORY_ID)" +
+                "foreign key($STORY_ID) references $STORY_TABLE($STORY_ID));"
         db!!.execSQL(create_storyTable)
         db!!.execSQL(create_locTable)
         db!!.execSQL(create_picTable)
