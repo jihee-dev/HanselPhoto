@@ -37,7 +37,7 @@ class MyDBHelper(val context: Context) : SQLiteOpenHelper(context, DB_NAME, null
                 "$STORY_ID integer primary key autoincrement, " +
                 "$STORY_DATE text, " +
                 "$STORY_NAME text, " +
-                "$STORY_COMMENT text;"
+                "$STORY_COMMENT text);"
         val create_locTable = "create table if not exists $LOC_TABLE(" +
                 "$LOC_ID integer, " +
                 "$STORY_ID integer, " +
